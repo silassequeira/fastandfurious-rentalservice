@@ -10,10 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Days+One:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Days+One:wght@400;600;700;900&display=swap');
-    </style>
 </head>
 
 <body>
@@ -23,15 +19,76 @@
         <nav>
             <label for="saldo" id="saldo">Saldo:</label>
             <a href="#" id="reservas">Gerir Reservas</a>
-            <a href="#" id="userName"></a>
+            <label for="username"></label>
         </nav>
     </header>
 
     <main>
-        <a href="#" class="back"> &lt; Voltar</a>
 
-        <div class="container1">
+        <div class="infoFlex">
+            <a href="#" class="back"> &lt; Voltar</a>
+            <h2>Selecione o seu veículo</h2>
         </div>
+
+        <div class="layoutGrid">
+            <div class="infoFlex column">
+                <h5>Filtros</h5>
+                <h6>Preço Total</h6>
+                <div class="infoFlex">
+                    <label for="min-price">Preço Mínimo</label>
+                    <input type="number" id="min-price" name="min-price" placeholder="Preço Mínimo">
+                    <label for="max-price">Preço Máximo</label>
+                    <input type="number" id="max-price" name="max-price" placeholder="Preço Máximo">
+                </div>
+                <h6>Características</h6>
+                <label for="car-brand">Marca</label>
+                <select name="car-brand" required>
+                    <option value="brand"></option>
+                    <option value="brand"></option>
+                    <option value="brand"></option>
+                    <option value="brand"></option>
+                </select><br>
+                <label for="car-seats">Números de Lugares</label>
+                <select name="car-seats" required>
+                    <option value="seats"></option>
+                    <option value="seats"></option>
+                    <option value="seats"></option>
+                    <option value="seats"></option>
+                </select><br>
+
+                <label for="two-doors">2 Portas</label>
+                <input type="radio" name="two-doors" value="two-doors">
+
+                <label for="four-doors">4 Portas</label>
+                <input type="radio" name="four-doors" value="four-doors">
+
+                <button type="submit" name="filter">Filtrar</button>
+            </div>
+
+            <div class="infoFlex column">
+                <div class="carContainer layoutGrid">
+                    <div class="imgContainer">
+                        <img src="#" alt="img-alt">
+                    </div>
+                    <div class="infoFlex">
+                        <h3 value="car-name"></h3>
+                        <h6>Ano</h6>
+                        <h5 value="car-year"></h5>
+                        <h6>Numero de Lugares</h6>
+                        <h5 value="seats"></h5>
+                        <h6>Marca</h6>
+                        <h5 value="brand"></h5>
+                        <h6>Modelo</h6>
+                        <h5 value="model"></h5>
+                    </div>
+
+                    <div class="infoFlex">
+                        <h6>Preço</h6>
+                        <h5 value="price"></h5>
+                        <button type="submit" name="rent">Reservar</button>
+                    </div>
+                </div>
+            </div>
     </main>
 </body>
 
