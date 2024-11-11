@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Days+One:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+
+        <nav>
+            <a href="#">Criar Conta</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container1">
+            <form>
+                <h2>Encontre as melhores ofertas para alugar carros</h2>
+                <div class="dataContainer">
+                    <p>Data de Levantamento</p>
+                    <input type="date" id="pickupDate" name="pickupDate">
+                    <label for="pickupDate"  placeholder="26/10/2024"></label>
+                </div>
+                <div class="dataContainer">
+                    <p>Hora</p>
+                    <input type="date" id="pickupHour" name="pickupHour">
+                    <label for="pickupHour"  placeholder="22:00"></label>
+                </div>
+                <div class="dataContainer">
+                    <p>Data de Entrega</p>
+                    <input type="date" id="dropDate" name="dropDate">
+                    <label for="dropDate"  placeholder="29/10/2024"></label>
+                </div>
+                <div class="dataContainer">
+                    <p>Data de Levantamento</p>
+                    <input type="date" id="dropHour" name="dropHour">
+                    <label for="dropHour"  placeholder="14:30"></label>
+                </div>
+                <button type="submit" id="buttonSearch">Pesquisar</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>
