@@ -157,7 +157,7 @@ main {
     white-space: nowrap;
 }
 
-input {
+.input {
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     font-family: var(--primary-font);

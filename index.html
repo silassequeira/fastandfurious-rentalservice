@@ -33,29 +33,32 @@
                 <div class="infoFlex">
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
-                        <input type="date" id="pickupDate" name="pickupDate">
+                        <button class="date-input-btn input" name="pickupDate">01/01/2001</button>
                         <label for="pickupDate" placeholder="26/10/2024"></label>
                     </div>
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Hora</h5>
-                        <input type="time" id="pickupHour" name="pickupHour">
+                        <button class="time-input-btn input" name="pickupHour">22:00</button>
                         <label for="pickupHour" placeholder="22:00"></label>
                     </div>
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Entrega</h5>
-                        <input type="date" id="dropDate" name="dropDate">
+                        <button class="date-input-btn input" name="dropDate">01/01/2001</button>
                         <label for="dropDate" placeholder="29/10/2024"></label>
                     </div>
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
-                        <input type="time" id="dropHour" name="dropHour">
+                        <button class="time-input-btn input" name="dropHour">14:30</button>
                         <label for="dropHour" placeholder="14:30"></label>
                     </div>
                 </div>
-                <button class="button centered-marginTop redFont whiteBackground" type="submit" id="buttonSearch">Pesquisar</button>
+                <button class="button centered-marginTop redFont whiteBackground" type="submit"
+                    id="buttonSearch">Pesquisar</button>
             </form>
         </div>
     </main>
+    <script src="switchToDateInput.js"></script>
+    <script src="switchToTimeInput.js"></script>
 </body>
 
 </html>
