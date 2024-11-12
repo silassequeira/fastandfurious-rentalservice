@@ -16,37 +16,43 @@
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
+        <input id="burger" type="checkbox">
+        <label for="burger" class="active">&#9776;</label>
+
         <nav>
-            <a href="#">Criar Conta</a>
-            <a href="#">Login</a>
+            <a class="button" href="register.html">Criar Conta</a>
+            <a class="button redBackground whiteFont" href="loginUser.html">Login</a>
         </nav>
     </header>
 
     <main>
-        <div class="container">
+        <div class="container redBackground">
             <form>
-                <h2>Encontre as melhores ofertas para alugar carros</h2>
-                <div class="dataContainer">
-                    <p>Data de Levantamento</p>
-                    <input type="date" id="pickupDate" name="pickupDate">
-                    <label for="pickupDate"  placeholder="26/10/2024"></label>
+                <h2 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h2>
+
+                <div class="infoFlex">
+                    <div class="infoFlex column">
+                        <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
+                        <input type="date" id="pickupDate" name="pickupDate">
+                        <label for="pickupDate" placeholder="26/10/2024"></label>
+                    </div>
+                    <div class="infoFlex column">
+                        <h5 class="centered-marginTop whiteFont">Hora</h5>
+                        <input type="time" id="pickupHour" name="pickupHour">
+                        <label for="pickupHour" placeholder="22:00"></label>
+                    </div>
+                    <div class="infoFlex column">
+                        <h5 class="centered-marginTop whiteFont">Data de Entrega</h5>
+                        <input type="date" id="dropDate" name="dropDate">
+                        <label for="dropDate" placeholder="29/10/2024"></label>
+                    </div>
+                    <div class="infoFlex column">
+                        <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
+                        <input type="time" id="dropHour" name="dropHour">
+                        <label for="dropHour" placeholder="14:30"></label>
+                    </div>
                 </div>
-                <div class="dataContainer">
-                    <p>Hora</p>
-                    <input type="date" id="pickupHour" name="pickupHour">
-                    <label for="pickupHour"  placeholder="22:00"></label>
-                </div>
-                <div class="dataContainer">
-                    <p>Data de Entrega</p>
-                    <input type="date" id="dropDate" name="dropDate">
-                    <label for="dropDate"  placeholder="29/10/2024"></label>
-                </div>
-                <div class="dataContainer">
-                    <p>Data de Levantamento</p>
-                    <input type="date" id="dropHour" name="dropHour">
-                    <label for="dropHour"  placeholder="14:30"></label>
-                </div>
-                <button type="submit" id="buttonSearch">Pesquisar</button>
+                <button class="button centered-marginTop redFont whiteBackground" type="submit" id="buttonSearch">Pesquisar</button>
             </form>
         </div>
     </main>
