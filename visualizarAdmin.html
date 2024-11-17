@@ -13,12 +13,16 @@
 </head>
 
 <body>
+    <php
+        session_start();
+        $user=$_SESSION['user'];
+        >
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
         <nav>
             <a href="#" id="statistics">Ver Estatísticas</a>
-            <label for="username-admin"></label>
+            <label for="username-admin"><php echo $user></label>
         </nav>
     </header>
 
