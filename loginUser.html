@@ -67,6 +67,10 @@ if (pg_num_rows($resultados) != 0) {
     echo "Usuário não encontrado";
 }
 
+//exporta a informação para utilizar em outras paginas
+session_start();
+$_SESSION['user'] = $user;
+
 pg_close($connection);
         >
     </main>
