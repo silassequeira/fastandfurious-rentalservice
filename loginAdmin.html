@@ -66,6 +66,10 @@ if (pg_num_rows($resultados) != 0) {
 } else {
     echo "Admin não encontrado";
 }
+            
+//exporta a informação para utilizar em outras paginas
+session_start();
+$_SESSION['user'] = $user;
 
 pg_close($connection);
         >
