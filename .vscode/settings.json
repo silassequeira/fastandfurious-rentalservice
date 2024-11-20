@@ -1,0 +1,16 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5433,
+            "driver": "PostgreSQL",
+            "name": "PostgreSQL 16",
+            "database": "postgres",
+            "username": "postgres",
+            "password": "postgres",
+            "connectionTimeout": 30
+        }
+    ],
+    "liveServer.settings.port": 5434
+}

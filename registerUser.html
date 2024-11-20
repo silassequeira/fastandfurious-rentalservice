@@ -14,30 +14,29 @@
 
 <body>
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.html" class="logo">Fast & Furious Cars Inc.</a>
     </header>
 
     <main>
-        <a href="#" class="back"> &lt; Voltar</a>
+        <a href="index.html" class="back"> &lt; Voltar</a>
 
         <div class="container">
-            <form>
+            <form method="POST" action="php/registerUser.php">
                 <h2>Regista a tua Conta</h2>
                 <div class="inputContainer">
                     <label for="username">Username ou E-mail</label>
-                    <input type="text" id="username" name="username">
+                    <input type="text" id="username" name="username" required>
                 </div>
                 <div class="inputContainer">
                     <label for="password">Password</label>
-                    <input type="text" id="password" name="password">
+                    <input type="password" id="password" name="password" required>
                 </div>
                 <div class="inputContainer">
                     <label for="name">Nome Próprio</label>
-                    <input type="text" id="name" name="name">
+                    <input type="text" id="name" name="name" required>
                 </div>
                 <div class="buttonContainer">
-                    <label for="register">Seguinte</label>
-                    <button type="submit" name="register" id="register">Iniciar Sessão</button>
+                    <button type="submit" id="register">Iniciar Sessão</button>
                 </div>
             </form>
         </div>

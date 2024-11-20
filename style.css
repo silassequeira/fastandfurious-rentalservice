@@ -113,10 +113,6 @@ header nav a {
     padding: 0 0.5rem;
 }
 
-header nav a:hover {
-    color: var(--text-light);
-}
-
 main {
     margin-left: 1.875rem;
     margin-right: 1.875rem;
@@ -203,10 +199,6 @@ img {
     transition: object-position 5s ease-in-out;
 }
 
-nav a:hover {
-    color: var(--text-light);
-}
-
 main nav {
     margin-top: 1rem;
 }
@@ -287,18 +279,12 @@ h5 {
     background: var(--red-gradient);
 }
 
-.redBackground:hover {
+a .redBackground:hover {
     background: var(--red);
 }
 
 .whiteBackground {
     background: var(--background);
-}
-
-.button:hover {
-    background: #ffffff;
-    color: #ffffff ;
-    transition: smooth;
 }
 
 @media (max-width: 995px) {
@@ -395,11 +381,6 @@ h5 {
         justify-content: center;
         margin: 2.3rem auto;
         width: 200px;
-    }
-
-    .centered-marginTop:hover {
-        background-color: var(--text);
-        color: var(--background);
     }
 
     .column {

@@ -5,8 +5,8 @@ port=5432";
 $connection = pg_connect($str);
 
 if (!$connection) {
-    die("Erro na ligacao");
+    die("Error Connecting");
     }
-    echo "Ligacao estabelecida!";
+    echo "Connected";
     pg_close($connection);
 ?>
