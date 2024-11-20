@@ -1,41 +1,36 @@
 <?php
-require_once 'config.php';
+$str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
+$connection = pg_connect($str);
 
-header('Content-Type: application/json');
-
-// Get JSON input
-$input = json_decode(file_get_contents('php://input'), true);
-
-$username = filter_var($input['username'], FILTER_SANITIZE_STRING);
-$email = filter_var($input['email'], FILTER_SANITIZE_EMAIL);
-$password = $input['password'];
-$name = filter_var($input['name'], FILTER_SANITIZE_STRING);
-
-try {
-    // Check if username or email already exists
-    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM administrador WHERE username = :username OR email = :email");
-    $checkStmt->execute(['username' => $username, 'email' => $email]);
-    
-    if ($checkStmt->fetchColumn() > 0) {
-        echo json_encode(['success' => false, 'message' => 'Username ou Email já existe']);
-        exit;
-    }
-
-    // Insert new administrator
-    $stmt = $pdo->prepare("INSERT INTO administrador (username, email, password, name) VALUES (:username, :email, :password, :name)");
-    $result = $stmt->execute([
-        'username' => $username,
-        'email' => $email,
-        'password' => $password, // WARNING: Use password_hash() in production
-        'name' => $name
-    ]);
-
-    if ($result) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Erro no registo']);
-    }
-} catch (PDOException $e) {
-    error_log($e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+if (!$connection) {
+    die("Error Connecting to Database");
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $newuser = $_POST['username'];
+    $email = $_POST['email'];  // Assuming you've added an email field to the HTML form
+    $newpass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $name = $_POST['name'];
+
+    // Check if username or email already exists
+    $conf = pg_query_params($connection, 
+        "SELECT username FROM cliente WHERE username = $1 OR email = $2", 
+        array($newuser, $email)
+    );
+
+    if (pg_num_rows($conf) > 0) {
+        echo "Username ou email já existente";
+    } else {
+        // Insert new usergit swi
+        $sql = "INSERT INTO administrador (username, email, password, name) VALUES ($1, $2, $3, $4)";
+        $result = pg_query_params($connection, $sql, array($newuser, $email, $newpass, $name));
+
+        if ($result) {
+            echo "Conta criada com sucesso!";
+        } else {
+            echo "Erro ao criar a conta: " . pg_last_error($connection);
+        }
+    }
+    
+}
+?>
