@@ -3,7 +3,8 @@ session_start();
 
 $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
 if (!$connection) {
-    die("Error Connecting to Database");
+    die("Database connection failed: " . pg_last_error());
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,32 +26,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if (pg_num_rows($queryUser) > 0 || pg_num_rows($queryAdmin) > 0) {
-        echo "Username ou email já existente";
-    } else {
-        if (strpos($emailInput, '.admin') !== false) {
-            $sql = "INSERT INTO administrador (username, email, password, name) VALUES ($1, $2, $3, $4)";
-            $resultAdmin = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
+        $_SESSION['error'] = "Username ou email já existente";
+        header('Location: register.php');
+        exit();
+    }
 
-            if ($resultAdmin) {
-                echo "Conta de administrador criada com sucesso!";
-                header('Location: admin_visualizeAllCars.php');
-                exit();
-            } else {
-                echo "Erro ao criar a conta de administrador: " . pg_last_error($connection);
-            }
+    if (strpos($emailInput, '.admin') !== false) {
+        $sql = "INSERT INTO administrador (username, email, password, name) VALUES ($1, $2, $3, $4)";
+        $resultAdmin = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
+
+        if ($resultAdmin) {
+            $_SESSION['success'] = "Conta de administrador criada com sucesso!";
+            header('Location: admin_visualizeAllCars.php');
+            exit();
         } else {
-            $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, 0)";
-            $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
+            $_SESSION['error'] = "Erro ao criar a conta de administrador: " . pg_last_error($connection);
+            header('Location: register.php');
+            exit();
+        }
+    } else {
+        $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, 0)";
+        $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
 
-            if ($resultUser) {
-                echo "Conta criada com sucesso!";
-                header('Location: index.php');
-                exit();
-            } else {
-                echo "Erro ao criar a conta: " . pg_last_error($connection);
-            }
+        if ($resultUser) {
+            $_SESSION['success'] = "Conta criada com sucesso!";
+            header('Location: index.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Erro ao criar a conta: " . pg_last_error($connection);
+            header('Location: register.php');
+            exit();
         }
     }
+
     pg_close($connection);
+    exit();
 }
 ?>

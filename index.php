@@ -36,7 +36,7 @@
             $str = '<nav>
     <label for="saldo" id="saldo">Saldo:' . $saldo . ' </label>
     <a href="#" id="reservas">Gerir Reservas</a>
-    <label for="username"> ' . $saldo . ' </label>
+    <label for="username"> ' . $username . ' </label>
     </nav>';
 
             if (!$hasSession) {
