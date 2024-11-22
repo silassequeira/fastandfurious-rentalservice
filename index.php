@@ -15,6 +15,22 @@
 <body>
     <header>
         <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
+
+        <?php
+        if ($sessionCheck) {
+            if ($sessionCheck['type'] === 'user') {
+                $userDetails = $sessionCheck['details'];
+                echo "Bem-vindo, usuário " . htmlspecialchars($userDetails['username']);
+                echo "Saldo: " . htmlspecialchars($userDetails['saldo']);
+            } elseif ($sessionCheck['type'] === 'admin') {
+                $adminDetails = $sessionCheck['details'];
+                echo "Bem-vindo, administrador " . htmlspecialchars($adminDetails['username']);
+            }
+        } else {
+            echo "Nenhuma sessão ativa encontrada.";
+        }
+        ?>
+
         <?php
 
             $str = '<nav>

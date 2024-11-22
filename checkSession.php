@@ -9,42 +9,43 @@ if (!$connection) {
 function checkSession($connection) {
     if (isset($_SESSION['user'])) {
         $usernameInput = $_SESSION['user'];
-        
         $query = pg_query_params(
             $connection,
             "SELECT saldo, username FROM cliente WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
-        if ($query && pg_num_rows($query) == 1) {
-            $resultsUser = pg_fetch_assoc($query);
+        if ($query && pg_num_rows($query) === 1) {
+            $results = pg_fetch_assoc($query);
             return [
-                'userDetails' => $resultsUser,
-                'saldo' => $resultsUser['saldo']
+                'type' => 'user',
+                'details' => $results
             ];
         }
+
     } elseif (isset($_SESSION['admin'])) {
         $usernameInput = $_SESSION['admin'];
-        
         $query = pg_query_params(
             $connection,
             "SELECT username FROM administrador WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
-        if ($query && pg_num_rows($query) == 1) {
-            $resultsAdmin = pg_fetch_assoc($query);
+        if ($query && pg_num_rows($query) === 1) {
+            $results = pg_fetch_assoc($query);
             return [
-                'adminDetails' => $resultsAdmin
+                'type' => 'admin',
+                'details' => $results
             ];
         }
     }
-    return null;
+
+    return null; 
 }
 
-if (session_status() === PHP_SESSION_ACTIVE) {
-    $sessionCheck = checkSession($connection);
-}
+$sessionCheck = checkSession($connection);
 
 pg_close($connection);
 ?>
+
+
