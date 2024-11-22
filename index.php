@@ -14,42 +14,43 @@
 
 <body>
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
+        <?php
 
-        <input id="burger" type="checkbox">
-        <label for="burger" class="active">&#9776;</label>
+            $str = '<nav>
+    <label for="saldo" id="saldo">Saldo:' . $saldo . ' </label>
+    <a href="#" id="reservas">Gerir Reservas</a>
+    <label for="username"> ' . $saldo . ' </label>
+    </nav>';
 
+            if (!$hasSession) {
+                $str = '
         <nav>
-            <a class="button" href="register.html">Criar Conta</a>
+            <a class="button" href="registerUser.html">Criar Conta</a>
             <a class="button redBackground whiteFont" href="loginUser.html">Login</a>
-        </nav>
+        </nav>';
+            } else {
+                return $str;
+            }
+
+        ?>
     </header>
 
     <main>
         <div class="container redBackground">
-            <form>
+            <form method="GET" action="indexForm.php">
                 <h2 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h2>
 
                 <div class="infoFlex">
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
-                        <button class="date-input-btn input" name="pickupDate">01/01/2001</button>
-                        <label for="pickupDate" placeholder="26/10/2024"></label>
-                    </div>
-                    <div class="infoFlex column">
-                        <h5 class="centered-marginTop whiteFont">Hora</h5>
-                        <button class="time-input-btn input" name="pickupHour">22:00</button>
-                        <label for="pickupHour" placeholder="22:00"></label>
+                        <button class="date-input-btn input" name="datainicio">01/01/2001</button>
+                        <label for="datainicio" id="datainicio"></label>
                     </div>
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Entrega</h5>
-                        <button class="date-input-btn input" name="dropDate">01/01/2001</button>
-                        <label for="dropDate" placeholder="29/10/2024"></label>
-                    </div>
-                    <div class="infoFlex column">
-                        <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
-                        <button class="time-input-btn input" name="dropHour">14:30</button>
-                        <label for="dropHour" placeholder="14:30"></label>
+                        <button class="date-input-btn input" name="datafim">01/01/2001</button>
+                        <label for="datafim" id="datafim"></label>
                     </div>
                 </div>
                 <button class="button centered-marginTop redFont whiteBackground" type="submit"
@@ -58,7 +59,6 @@
         </div>
     </main>
     <script src="javascript/switchToDateInput.js"></script>
-    <script src="javascript/switchToTimeInput.js"></script>
 </body>
 
 </html>

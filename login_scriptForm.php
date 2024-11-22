@@ -1,29 +1,28 @@
 <?php
+session_start();
 
-require_once 'config.php';
-
-if (!$connection) {
-    die("Erro na conexão");
-            }
-            
 $user = $_GET['username'];
 $pass = $_GET['password'];
 
-$resultados = pg_query($connection, "SELECT password FROM cliente WHERE username='$user'") or die("Erro na consulta");
+$resultados = pg_query_params($connection, 
+    "SELECT password FROM cliente WHERE username = $1 OR email = $1", 
+    array($user)
+);
 
 if (pg_num_rows($resultados) != 0) {
     $row = pg_fetch_assoc($resultados);
-    if ($pass === $row['password']) {
+    
+    if (password_verify($pass, $row['password'])) {
+        $_SESSION['user'] = $user;
         echo "Autenticação bem-sucedida";
+        header('Location: index.php');
+        exit();
     } else {
         echo "Senha ou usuário incorretos";
     }
 } else {
     echo "Usuário não encontrado";
 }
-
-session_start();
-$_SESSION['user'] = $user;
 
 pg_close($connection);
 ?>
