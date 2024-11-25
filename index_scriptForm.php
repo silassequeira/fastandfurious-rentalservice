@@ -1,47 +1,42 @@
 <?php
-function handleReservationSubmission() {
-    global $connection;
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Location: loginUser.html');
-            exit();
-        }
-        return; 
-    }
+session_start();
 
-    if (!isset($_SESSION['user'])) {
-        header('Location: loginUser.html');
+$connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+if (!$connection) {
+    die("Error connecting to the database");
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['user']) {
+    $datainicio = $_POST['datainicio'];
+    $datafim = $_POST['datafim'];
+    $user = $_SESSION['user'];
+
+    if (empty($datainicio) || empty($datafim)) {
+        $_SESSION['error'] = "Por favor, preencha as datas corretamente." . pg_last_error($connection);
+        header('Location: index.php');
         exit();
     }
 
-    $user = $_SESSION['user'];
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $datainicio = $_POST['datainicio'] ?? null;
-        $datafim = $_POST['datafim'] ?? null;
-
-        if (empty($datainicio) || empty($datafim)) {
-            echo "Por favor, preencha as datas corretamente.";
-            exit();
-        }
-
-        $sql = "INSERT INTO reservas (datainicio, datafim, user_id)
+    $sql = "INSERT INTO reservas (datainicio, datafim, user_id)
                 VALUES ($1, $2, (SELECT id FROM cliente WHERE username = $3 OR email = $3))";
-        
-        $result = pg_query_params(
-            $connection, 
-            $sql, 
-            array($datainicio, $datafim, $user)
-        );
 
-        if ($result) {
-            echo "Reserva registrada com sucesso!";
-        } else {
-            echo "Erro ao registrar a reserva: " . pg_last_error($connection);
-        }
+    $resultUser = pg_query_params(
+        $connection,
+        $sql,
+        array($datainicio, $datafim, $user)
+    );
+
+    if ($resultUser) {
+        $_SESSION['success'] = "Data Inicio e Data fim registradas com sucesso!";
+        header('Location: user_selectCar.php');
+        exit();
     }
+
+} else {
+    $_SESSION['error'] = "A conta está registada como administrador " . pg_last_error($connection);
+    header('Location: admin_visualizeAllCars.php');
+    exit();
 }
 
-handleReservationSubmission();
+
 pg_close($connection);
-?>

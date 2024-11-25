@@ -6,12 +6,13 @@ if (!$connection) {
     die("Error connecting to the database");
 }
 
-function checkSession($connection) {
-    if (isset($_SESSION['user'])) {
+function checkSession($connection)
+{
+    if (isset($_SESSION['user']) && isset($_SESSION['logged_in'])) { 
         $usernameInput = $_SESSION['user'];
         $query = pg_query_params(
             $connection,
-            "SELECT saldo, username FROM cliente WHERE username = $1 OR email = $1",
+            "SELECT name, saldo, username FROM cliente WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
@@ -22,12 +23,11 @@ function checkSession($connection) {
                 'details' => $results
             ];
         }
-
-    } elseif (isset($_SESSION['admin'])) {
+    } elseif (isset($_SESSION['admin']) && isset($_SESSION['logged_in'])) {
         $usernameInput = $_SESSION['admin'];
         $query = pg_query_params(
             $connection,
-            "SELECT username FROM administrador WHERE username = $1 OR email = $1",
+            "SELECT name, username FROM administrador WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
@@ -40,12 +40,9 @@ function checkSession($connection) {
         }
     }
 
-    return null; 
+    return null;
 }
 
 $sessionCheck = checkSession($connection);
 
 pg_close($connection);
-?>
-
-

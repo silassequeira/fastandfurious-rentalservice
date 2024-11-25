@@ -1,3 +1,7 @@
+<?php
+include 'checkSession.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -20,41 +24,32 @@
         if ($sessionCheck) {
             if ($sessionCheck['type'] === 'user') {
                 $userDetails = $sessionCheck['details'];
-                echo "Bem-vindo, usuário " . htmlspecialchars($userDetails['username']);
-                echo "Saldo: " . htmlspecialchars($userDetails['saldo']);
+                echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
+                echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+                echo '<a href="logout.php">Terminar Sessão</a>';
             } elseif ($sessionCheck['type'] === 'admin') {
-                $adminDetails = $sessionCheck['details'];
-                echo "Bem-vindo, administrador " . htmlspecialchars($adminDetails['username']);
+                header('Location: admin_visualizeAllCars.php');
+                exit();
             }
         } else {
-            echo "Nenhuma sessão ativa encontrada.";
+            echo $str = '
+            <nav>
+                <a class="button" href="register.php">Criar Conta</a>
+                <a class="button redBackground whiteFont" href="login.php">Login</a>
+            </nav>';
         }
-        ?>
-
-        <?php
-
-            $str = '<nav>
-    <label for="saldo" id="saldo">Saldo:' . $saldo . ' </label>
-    <a href="#" id="reservas">Gerir Reservas</a>
-    <label for="username"> ' . $username . ' </label>
-    </nav>';
-
-            if (!$hasSession) {
-                $str = '
-        <nav>
-            <a class="button" href="registerUser.html">Criar Conta</a>
-            <a class="button redBackground whiteFont" href="loginUser.html">Login</a>
-        </nav>';
-            } else {
-                return $str;
-            }
-
         ?>
     </header>
 
     <main>
+        <?php
+        if (isset($_SESSION['error'])) {
+            echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
+            unset($_SESSION['error']);
+        }
+        ?>
         <div class="container redBackground">
-            <form method="GET" action="indexForm.php">
+            <form method="GET" action="index_scriptForm.php">
                 <h2 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h2>
 
                 <div class="infoFlex">

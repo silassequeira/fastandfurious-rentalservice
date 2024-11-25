@@ -7,7 +7,7 @@ if (!$connection) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
     $usernameInput = $_POST['username'];
     $emailInput = $_POST['email'];
     $passwordInput = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($resultAdmin) {
             $_SESSION['success'] = "Conta de administrador criada com sucesso!";
+            $_SESSION['logged_in'] = true;
             header('Location: admin_visualizeAllCars.php');
             exit();
         } else {
@@ -45,11 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     } else {
+        $randomSaldo = rand(400, 1200);
         $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, 0)";
-        $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
+        $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput, $randomSaldo));
 
         if ($resultUser) {
             $_SESSION['success'] = "Conta criada com sucesso!";
+            $_SESSION['logged_in'] = true;
             header('Location: index.php');
             exit();
         } else {
@@ -62,4 +65,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     pg_close($connection);
     exit();
 }
-?>

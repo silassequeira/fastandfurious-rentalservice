@@ -6,7 +6,7 @@ if (!$connection) {
     die("Database connection failed: " . pg_last_error());
 }
 
-if (isset($_POST['submitLogin'])) {
+if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $usernameInput = $_POST['username']; 
     $passwordInput = $_POST['password'];
 
@@ -27,6 +27,7 @@ if (isset($_POST['submitLogin'])) {
         
         if (password_verify($passwordInput, $userRow['password'])) {
             $_SESSION['user'] = $usernameInput;
+            $_SESSION['logged_in'] = true;
             $_SESSION['success'] = "Autenticação bem-sucedida como cliente";
             header('Location: index.php');
             exit();
@@ -41,6 +42,7 @@ if (isset($_POST['submitLogin'])) {
         
         if (password_verify($passwordInput, $adminRow['password'])) {
             $_SESSION['admin'] = $usernameInput;
+            $_SESSION['logged_in'] = true;
             $_SESSION['success'] = "Autenticação bem-sucedida como administrador";
             header('Location: admin_dashboard.php');
             exit();
