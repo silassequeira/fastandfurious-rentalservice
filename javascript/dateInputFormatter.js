@@ -1,101 +1,118 @@
-// Function to configure date inputs with default values
-function configureDateInputs() {
-    // Get date input elements
+// Utility function to format date to YYYY-MM-DD
+const formatDate = (date) => date.toISOString().split('T')[0];
+
+// Create a clean date (remove time component)
+const cleanDate = (date) => {
+    const cleaned = new Date(date);
+    cleaned.setHours(0, 0, 0, 0);
+    return cleaned;
+};
+
+// Configuration for date range constraints
+const createDateRangeConfig = () => {
+    const today = cleanDate(new Date());
+    const maxDate = new Date(today);
+    maxDate.setMonth(today.getMonth() + 3);
+    return {
+        minDate: today,
+        maxDate: maxDate
+    };
+};
+
+// Validate and adjust date input
+const validateDateInput = (input, config) => {
+    const inputDate = cleanDate(new Date(input.value));
+    const { minDate, maxDate } = config;
+
+    if (inputDate < minDate || inputDate > maxDate) {
+        alert("Selected rental date is out of range. Please select a date within the next 3 months.");
+        input.value = "";
+    }
+};
+
+// Configure date inputs with constraints and validation
+const configureDateInputs = () => {
     const startDateInput = document.getElementById('datainicio');
     const endDateInput = document.getElementById('datafim');
+    const rentalDateInputs = document.querySelectorAll('input[type="date"]');
+    
+    const dateRangeConfig = createDateRangeConfig();
 
-    // Function to get today's date in YYYY-MM-DD format
-    function getTodayDate() {
+    // Set default dates
+    const setDefaultDates = () => {
         const today = new Date();
-        return today.toISOString().split('T')[0];
-    }
-
-    // Function to get date 7 days from now in YYYY-MM-DD format
-    function getSevenDaysLater() {
-        const today = new Date();
+        startDateInput.value = formatDate(today);
+        
         const sevenDaysLater = new Date(today);
         sevenDaysLater.setDate(today.getDate() + 7);
-        return sevenDaysLater.toISOString().split('T')[0];
-    }
+        endDateInput.value = formatDate(sevenDaysLater);
+    };
 
-    // Set initial default values
-    function setDefaultDates() {
-        // Set start date to today
-        startDateInput.value = getTodayDate();
-
-        // Set end date to 7 days later
-        endDateInput.value = getSevenDaysLater();
-
-        // Update constraints based on default dates
-        updateDateConstraints();
-    }
-
-    // Function to validate and constrain date inputs
-    function updateDateConstraints() {
+    // Update date constraints based on start date
+    const updateDateConstraints = () => {
+        const startDate = cleanDate(new Date(startDateInput.value));
+        
         // Ensure end date is not before start date
-        endDateInput.min = startDateInput.value;
+        endDateInput.min = formatDate(startDate);
 
-        // Calculate max date (3 months after start date)
-        if (startDateInput.value) {
-            const startDate = new Date(startDateInput.value);
-            const maxDate = new Date(startDate);
-            maxDate.setMonth(startDate.getMonth() + 3);
+        // Set max end date to 3 months after start date
+        const maxEndDate = new Date(startDate);
+        maxEndDate.setMonth(startDate.getMonth() + 3);
+        endDateInput.max = formatDate(maxEndDate);
+    };
 
-            // Format max date to YYYY-MM-DD for input constraint
-            const maxDateString = maxDate.toISOString().split('T')[0];
-            endDateInput.max = maxDateString;
-        }
-    }
+    // Validate and adjust end date
+    const validateEndDate = () => {
+        const startDate = cleanDate(new Date(startDateInput.value));
+        const endDate = cleanDate(new Date(endDateInput.value));
 
-    // Add event listeners for dynamic updates
-    startDateInput.addEventListener('change', () => {
-        // Reset end date if it becomes invalid
-        if (new Date(endDateInput.value) < new Date(startDateInput.value)) {
-            // Set end date to 7 days after new start date
-            const newStartDate = new Date(startDateInput.value);
-            const newEndDate = new Date(newStartDate);
-            newEndDate.setDate(newStartDate.getDate() + 7);
-            endDateInput.value = newEndDate.toISOString().split('T')[0];
-        }
-        updateDateConstraints();
-    });
-
-    // Additional validation on end date change
-    endDateInput.addEventListener('change', () => {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-
-        // Validate end date against start date
         if (endDate < startDate) {
             alert('Return date must be after the start date');
-            // Reset to 7 days after start date
             const defaultEndDate = new Date(startDate);
             defaultEndDate.setDate(startDate.getDate() + 7);
-            endDateInput.value = defaultEndDate.toISOString().split('T')[0];
+            endDateInput.value = formatDate(defaultEndDate);
             return;
         }
 
-        // Validate end date against 3-month limit
         const maxDate = new Date(startDate);
         maxDate.setMonth(startDate.getMonth() + 3);
 
         if (endDate > maxDate) {
             alert('Return date cannot exceed 3 months from the start date');
-            // Reset to max allowed date
-            endDateInput.value = maxDate.toISOString().split('T')[0];
+            endDateInput.value = formatDate(maxDate);
         }
+    };
+
+    // Setup constraints for all rental date inputs
+    const setupRentalDateConstraints = () => {
+        rentalDateInputs.forEach(input => {
+            input.min = formatDate(dateRangeConfig.minDate);
+            input.max = formatDate(dateRangeConfig.maxDate);
+            
+            input.addEventListener('input', () => validateDateInput(input, dateRangeConfig));
+        });
+    };
+
+    // Event listeners for dynamic updates
+    startDateInput.addEventListener('change', () => {
+        const startDate = cleanDate(new Date(startDateInput.value));
+        const currentEndDate = cleanDate(new Date(endDateInput.value));
+
+        if (currentEndDate < startDate) {
+            const newEndDate = new Date(startDate);
+            newEndDate.setDate(startDate.getDate() + 7);
+            endDateInput.value = formatDate(newEndDate);
+        }
+        updateDateConstraints();
     });
 
-    // Initial setup with default dates
+    endDateInput.addEventListener('change', validateEndDate);
+
+    // Initial setup
     setDefaultDates();
-}
+    updateDateConstraints();
+    setupRentalDateConstraints();
+};
 
-// Call the configuration when the DOM is fully loaded
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', configureDateInputs);
-
-// Call the configuration when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', configureDateInputs);
-const dateInput = document.getElementById('date-input');
-dateInput.addEventListener('click', () => {
-    dateInput.showPicker && dateInput.showPicker();
-});
