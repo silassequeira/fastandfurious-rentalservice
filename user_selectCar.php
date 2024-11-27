@@ -103,38 +103,39 @@ $idR = $_SESSION['idR'];
 
        $sqrFiltro= 'SELECT * FROM carro ' . $sqrMinPrice . $sqrBrand . $sqrSeats .  $sqrMaxPrice . 'AND ocultado = FALSE';
        $ID_filtro = pg_query($connection, $sqrFiltr);
-
-    if ($row = pg_fetch_assoc($result)) {
-
-        echo "Nome: " . $row['nome'] . "<br>";
-    }
-
-
-            <div class="infoFlex column">
-                <div class="carContainer layoutGrid">
-                    <div class="imgContainer">
-                        <img src="#" alt="img-alt">
-                    </div>
-                    <div class="infoFlex">
-                        <h3 value="name"></h3>
-                        <h6>Ano</h6>
-                        <h5 value="year"></h5>
-                        <h6>Numero de Lugares</h6>
-                        <h5 value="seats"></h5>
-                        <h6>Marca</h6>
-                        <h5 value="brand"></h5>
-                        <h6>Modelo</h6>
-                        <h5 value="model"></h5>
-                    </div>
-
-                    <div class="infoFlex">
-                        <h6>Preço</h6>
-                        <h5 value="price"></h5>
-                        <button type="submit" name="rent">Reservar</button>
-                    </div>
+       
+       if ($ID_filtro) {
+        foreach (pg_fetch_all($ID_filtro) as $row) {
+    ?>
+        <div class="infoFlex column">
+            <div class="carContainer layoutGrid">
+                <div class="imgContainer">
+                    <img src="#" alt="img-alt">
+                </div>
+                <div class="infoFlex">
+                    <h3><?php echo htmlspecialchars($row['nome']); ?></h3>
+                    <h6>Ano</h6>
+                    <h5><?php echo htmlspecialchars($row['ano']); ?></h5>
+                    <h6>Numero de Lugares</h6>
+                    <h5><?php echo htmlspecialchars($row['assentos']); ?></h5>
+                    <h6>Marca</h6>
+                    <h5><?php echo htmlspecialchars($row['marca']); ?></h5>
+                    <h6>Modelo</h6>
+                    <h5><?php echo htmlspecialchars($row['modelo']); ?></h5>
+                </div>
+                <div class="infoFlex">
+                    <h6>Preço</h6>
+                    <h5><?php echo htmlspecialchars($row['valordiario']); ?></h5>
+                    <button type="submit" name="rent">Reservar</button>
                 </div>
             </div>
-            ?>
+        </div>
+    <?php 
+        }
+    } else {
+        echo "Erro na consulta: " . pg_last_error($connection);
+    }
+    ?>
     </main> 
 </body>
 
