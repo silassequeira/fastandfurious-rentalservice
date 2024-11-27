@@ -1,3 +1,14 @@
+<?php
+session_start();
+$str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
+
+$connection = pg_connect($str);
+if (!$connection) {
+    die("Erro na conexão");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -13,25 +24,15 @@
 </head>
 
 <body>
-    <php
-session_start();
-$user = $_SESSION['user'];
-$str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
-        
-$connection = pg_connect($str);
-if (!$connection) {
-    die("Erro na conexão");
-}
-        
-$saldo = pg_query($connection, "SELECT saldo FROM cliente WHERE username='$user'");
->
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
         <nav>
             <label for="saldo" id="saldo">Saldo:<php echo $saldo></label>
             <a href="#" id="reservas">Gerir Reservas</a>
-            <label for="username"><php echo $user></label>
+            <label for="username">
+                <php echo $user>
+            </label>
         </nav>
     </header>
 
@@ -68,40 +69,64 @@ $saldo = pg_query($connection, "SELECT saldo FROM cliente WHERE username='$user'
                     <option value="seats"></option>
                 </select><br>
 
-                <label for="two-doors">2 Portas</label>
-                <input type="radio" name="two-doors" value="two-doors">
-
-                <label for="four-doors">4 Portas</label>
-                <input type="radio" name="four-doors" value="four-doors">
-
                 <button type="submit" name="filter">Filtrar</button>
             </div>
 
-            <div class="infoFlex column">
-                <div class="carContainer layoutGrid">
-                    <div class="imgContainer">
-                        <img src="#" alt="img-alt">
-                    </div>
-                    <div class="infoFlex">
-                        <h3 value="name"></h3>
-                        <h6>Ano</h6>
-                        <h5 value="year"></h5>
-                        <h6>Numero de Lugares</h6>
-                        <h5 value="seats"></h5>
-                        <h6>Marca</h6>
-                        <h5 value="brand"></h5>
-                        <h6>Modelo</h6>
-                        <h5 value="model"></h5>
-                    </div>
+            <?php
+            $sqrFiltro = 'SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000';
 
-                    <div class="infoFlex">
-                        <h6>Preço</h6>
-                        <h5 value="price"></h5>
-                        <button type="submit" name="rent">Reservar</button>
+            // If filtering conditions are set, modify the query
+            if (isset($_GET['min-price'])) {
+                $minprice = $_GET['min-price'];
+                $sqrFiltro .= " AND valordiario > $minprice";
+            }
+            if (isset($_GET['max-price'])) {
+                $maxprice = $_GET['max-price'];
+                $sqrFiltro .= " AND valordiario < $maxprice";
+            }
+            if (isset($_GET['car-brand'])) {
+                $brand = $_GET['car-brand'];
+                $sqrFiltro .= " AND marca = '$brand'";
+            }
+            // Always add this condition
+            $sqrFiltro .= ' AND ocultado = FALSE';
+
+            // Execute the query
+            $ID_filtro = pg_query($connection, $sqrFiltro);
+
+            if ($ID_filtro) {
+                foreach (pg_fetch_all($ID_filtro) as $row) {
+            ?>
+                    <div class="infoFlex column">
+                        <div class="carContainer layoutGrid">
+                            <div class="imgContainer">
+                                <img src="#" alt="img-alt">
+                            </div>
+                            <div class="infoFlex">
+                                <h3><?php echo htmlspecialchars($row['nome']); ?></h3>
+                                <h6>Ano</h6>
+                                <h5><?php echo htmlspecialchars($row['ano']); ?></h5>
+                                <h6>Numero de Lugares</h6>
+                                <h5><?php echo htmlspecialchars($row['assentos']); ?></h5>
+                                <h6>Marca</h6>
+                                <h5><?php echo htmlspecialchars($row['marca']); ?></h5>
+                                <h6>Modelo</h6>
+                                <h5><?php echo htmlspecialchars($row['modelo']); ?></h5>
+                            </div>
+                            <div class="infoFlex">
+                                <h6>Preço</h6>
+                                <h5><?php echo htmlspecialchars($row['valordiario']); ?></h5>
+                                <button type="submit" name="rent">Reservar</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-    </main> 
+            <?php
+                }
+            } else {
+                echo "Erro na consulta: " . pg_last_error($connection);
+            }
+            ?>
+    </main>
 </body>
 
 </html>

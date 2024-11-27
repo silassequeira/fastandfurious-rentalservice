@@ -1,32 +1,43 @@
 <?php
-    $str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
-    $connection = pg_connect($str);
+session_start();
+include 'criar_Id.php';  // Include the ID generation script
 
-    if (!$connection) {
-        die("Erro na conexão");
+// Database connection
+$connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+
+if (!$connection) {
+    die("Erro na conexão");
+}
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Sanitize inputs to prevent SQL injection
+    $name = pg_escape_string($connection, $_POST['car-name']);
+    $brand = pg_escape_string($connection, $_POST['brand']);
+    $model = pg_escape_string($connection, $_POST['model']);
+    $seats = pg_escape_string($connection, $_POST['car-seats']);
+    $year = pg_escape_string($connection, $_POST['year']);
+    $price = pg_escape_string($connection, $_POST['price']);
+    $user = $_SESSION['user'];
+
+    // Generate unique ID using the function from criar_Id.php
+    $id = generateUniqueId($connection, 'carro', 'id_carro');
+
+    // Insert query
+    $sql = "INSERT INTO carro (id_carro, marca, modelo, ano, assentos, valordiario, administrador_username) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7)";
+    
+    $result = pg_query_params($connection, $sql, [
+        $id, $brand, $model, $year, $seats, $price, $user
+    ]);
+
+    if ($result) {
+        echo "Carro adicionado com sucesso!";
+    } else {
+        echo "Erro ao adicionar carro: " . pg_last_error($connection);
     }
-    // get informação
-    $name = $_GET['car-name'];
-    $brand = $_GET['brand'];
-    $model = $_GET['model'];
-    $seats = $_GET['seats'];
-    $year = $_GET['year'];
-    $price = $_GET['price'];
+}
 
-    //criar um id
-    $id=0;
-    $valid=false;
-    while (!$valid) {
-        $id++;
-        $query = "SELECT id_carro FROM carro WHERE id_carro = $1";
-        $result = pg_query_params($connection, $query, array($id));
-
-        // Se não encontrar nenhuma linha, o ID está disponível
-        if (pg_num_rows($result) == 0) {
-            $valid = true;
-        }
-    }
-    //adicionar carro á base de dados
-    $sql = "INSERT INTO carro (id_carro, marca, modelo,ano,assentos,valordiario,administrador_username) VALUES ('$id', '$marca', '$model', '$year', '$seats', '$price', '$user')";
-    $result = pg_query($connection, $sql);
-    ?>
+// Close connection
+pg_close($connection);
+?>

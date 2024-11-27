@@ -13,10 +13,7 @@
 </head>
 
 <body>
-    <php
-        session_start();
-        $user=$_SESSION['user'];
-        >
+
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
@@ -24,8 +21,10 @@
         <label for="burger" class="active">&#9776;</label>
 
         <nav>
-            <a href="#" id="statistics">Ver Estatísticas</a>
-            <label for="username-admin"> <php echo $user> </label>
+            <a href="#" id="statistics">Add New Car</a>
+            <label for="username-admin">
+                <php echo $user>
+            </label>
         </nav>
     </header>
 
@@ -36,10 +35,7 @@
             <h2>Estatísticas</h2>
         </div>
 
-        <form>
-            <label for="date">Data</label>
-            <input type="date" name="date" id="date">
-
+        <form method="GET" action="admin_addNewCar_scriptForm">
             <div class="layoutGrid">
                 <div class="infoFlex column">
                     <input type="image" alt="image">
@@ -66,12 +62,6 @@
                         <option value="seats">5</option>
                     </select><br>
                 </div>
-                <label for="two-doors">2 Portas</label>
-                <input type="radio" name="two-doors" value="two-doors">
-
-                <label for="four-doors">4 Portas</label>
-                <input type="radio" name="four-doors" value="four-doors">
-
                 <div class="inputContainer">
                     <label for="year">Ano</label>
                     <input type="text" id="year" name="year">
@@ -88,38 +78,6 @@
                 </div>
             </div>
         </form>
-         <?php
-    $str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
-    $connection = pg_connect($str);
-
-    if (!$connection) {
-        die("Erro na conexão");
-    }
-    // get informação
-    $name = $_GET['car-name'];
-    $brand = $_GET['brand'];
-    $model = $_GET['model'];
-    $seats = $_GET['seats'];
-    $year = $_GET['year'];
-    $price = $_GET['price'];
-
-    //criar um id
-    $id=0;
-    $valid=false;
-    while (!$valid) {
-        $id++;
-        $query = "SELECT id_carro FROM carro WHERE id_carro = $1";
-        $result = pg_query_params($connection, $query, array($id));
-
-        // Se não encontrar nenhuma linha, o ID está disponível
-        if (pg_num_rows($result) == 0) {
-            $valid = true;
-        }
-    }
-    //adicionar carro á base de dados
-    $sql = "INSERT INTO carro (id_carro, marca, modelo,ano,assentos,valordiario,administrador_username) VALUES ('$id', '$marca', '$model', '$year', '$seats', '$price', '$user')";
-    $result = pg_query($connection, $sql);
-    ?>
     </main>
 </body>
 

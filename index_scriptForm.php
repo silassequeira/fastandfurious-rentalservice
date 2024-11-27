@@ -25,6 +25,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['user']) {
         $sql,
         array($datainicio, $datafim, $user)
     );
+        if (empty($datainicio) || empty($datafim)) {
+            echo "Por favor, preencha as datas corretamente.";
+            exit();
+        }
+        
+        $idR=generateUniqueId('reserva_', 'id_reserva', $connection);
+        $_SESSION['idR'] = $idR;
+        $sql = "INSERT INTO reserva_ (id_reserva,datainicio, datafim, user_id)
+                VALUES ($idR, $1, $2, (SELECT id FROM cliente WHERE username = $3 OR email = $3))";
+        
+        $result = pg_query_params(
+            $connection, 
+            $sql, 
+            array($datainicio, $datafim, $user)
+        );
 
     if ($resultUser) {
         $_SESSION['success'] = "Data Inicio e Data fim registradas com sucesso!";
