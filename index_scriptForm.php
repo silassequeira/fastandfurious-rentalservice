@@ -24,9 +24,11 @@ function handleReservationSubmission() {
             echo "Por favor, preencha as datas corretamente.";
             exit();
         }
-
-        $sql = "INSERT INTO reservas (datainicio, datafim, user_id)
-                VALUES ($1, $2, (SELECT id FROM cliente WHERE username = $3 OR email = $3))";
+        
+        $idR=generateUniqueId('reserva_', 'id_reserva');
+        $_SESSION['idR'] = $idR;
+        $sql = "INSERT INTO reserva_ (id_reserva,datainicio, datafim, user_id)
+                VALUES ($idR, $1, $2, (SELECT id FROM cliente WHERE username = $3 OR email = $3))";
         
         $result = pg_query_params(
             $connection, 

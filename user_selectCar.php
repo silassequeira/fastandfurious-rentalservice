@@ -24,6 +24,8 @@ if (!$connection) {
 }
         
 $saldo = pg_query($connection, "SELECT saldo FROM cliente WHERE username='$user'");
+$idR = $_SESSION['idR'];
+
 >
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
@@ -77,6 +79,37 @@ $saldo = pg_query($connection, "SELECT saldo FROM cliente WHERE username='$user'
                 <button type="submit" name="filter">Filtrar</button>
             </div>
 
+        <?php
+        $sqrMinPrice= 'where valordiario > 0 AND';
+        $sqrMaxPrice= 'valordiario < 100000';
+        $sqrBrand= '';
+        $sqrSeats= '';
+        if (isset($_GET['min-price']){
+            $minprice = $_GET['min-price'];
+            $sqrMinPrice = 'WHERE valordiario > ' . $minprice . ' AND ';
+        }
+        if (isset($_GET['max-price']){
+            $maxprice = $_GET['max-price'];
+            $sqrMaxPrice= 'valordiario < ' . $maxprice;
+        }
+        if (isset($_GET['car-brand']){
+            $brand = $_GET['car-brand'];
+            $sqrBrand= 'marca LIKE ' . "'" . $brand . "' AND ";
+        }
+        if (isset($_GET['seats']){
+            $seats = $_GET['seats'];
+            $sqrSeats= 'assentos = ' . $seats . ' AND ';
+        }
+
+       $sqrFiltro= 'SELECT * FROM carro ' . $sqrMinPrice . $sqrBrand . $sqrSeats .  $sqrMaxPrice . 'AND ocultado = FALSE';
+       $ID_filtro = pg_query($connection, $sqrFiltr);
+
+    if ($row = pg_fetch_assoc($result)) {
+
+        echo "Nome: " . $row['nome'] . "<br>";
+    }
+
+
             <div class="infoFlex column">
                 <div class="carContainer layoutGrid">
                     <div class="imgContainer">
@@ -101,6 +134,7 @@ $saldo = pg_query($connection, "SELECT saldo FROM cliente WHERE username='$user'
                     </div>
                 </div>
             </div>
+            ?>
     </main> 
 </body>
 

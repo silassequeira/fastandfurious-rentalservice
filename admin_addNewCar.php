@@ -104,18 +104,7 @@
     $price = $_GET['price'];
 
     //criar um id
-    $id=0;
-    $valid=false;
-    while (!$valid) {
-        $id++;
-        $query = "SELECT id_carro FROM carro WHERE id_carro = $1";
-        $result = pg_query_params($connection, $query, array($id));
-
-        // Se não encontrar nenhuma linha, o ID está disponível
-        if (pg_num_rows($result) == 0) {
-            $valid = true;
-        }
-    }
+    $id=generateUniqueId('carro', 'id_carro');
     //adicionar carro á base de dados
     $sql = "INSERT INTO carro (id_carro, marca, modelo,ano,assentos,valordiario,administrador_username) VALUES ('$id', '$marca', '$model', '$year', '$seats', '$price', '$user')";
     $result = pg_query($connection, $sql);
