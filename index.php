@@ -55,12 +55,12 @@ include 'checkSession.php';
                 <div class="infoFlex">
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Levantamento</h5>
-                        <button class="date-input-btn input" name="datainicio">01/01/2001</button>
+                        <button class="date-input-btn input" name="datainicio"></button>
                         <label for="datainicio" id="datainicio"></label>
                     </div>
                     <div class="infoFlex column">
                         <h5 class="centered-marginTop whiteFont">Data de Entrega</h5>
-                        <button class="date-input-btn input" name="datafim">01/01/2001</button>
+                        <button class="date-input-btn input" name="datafim"></button>
                         <label for="datafim" id="datafim"></label>
                     </div>
                 </div>
