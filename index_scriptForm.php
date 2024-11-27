@@ -47,11 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['user']) {
         exit();
     }
 
-} else {
+}  else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['admin']) {
     $_SESSION['error'] = "A conta está registada como administrador " . pg_last_error($connection);
-    header('Location: admin_visualizeAllCars.php');
+    header('Location: logout.php');
+    exit();
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['user']) && !isset($_SESSION['admin'])) {
+    $_SESSION['error'] = "Por favor, faça login para reservar um carro";
+    header('Location: index.php');
     exit();
 }
-
 
 pg_close($connection);

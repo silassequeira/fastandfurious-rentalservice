@@ -25,7 +25,7 @@ const validateDateInput = (input, config) => {
     const { minDate, maxDate } = config;
 
     if (inputDate < minDate || inputDate > maxDate) {
-        alert("Selected rental date is out of range. Please select a date within the next 3 months.");
+        alert("Selected  date is out of range. Please select a date within the next 3 months.");
         input.value = "";
     }
 };
@@ -34,7 +34,7 @@ const validateDateInput = (input, config) => {
 const configureDateInputs = () => {
     const startDateInput = document.getElementById('datainicio');
     const endDateInput = document.getElementById('datafim');
-    const rentalDateInputs = document.querySelectorAll('input[type="date"]');
+    const DateInputs = document.querySelectorAll('input[type="date"]');
     
     const dateRangeConfig = createDateRangeConfig();
 
@@ -83,9 +83,9 @@ const configureDateInputs = () => {
         }
     };
 
-    // Setup constraints for all rental date inputs
-    const setupRentalDateConstraints = () => {
-        rentalDateInputs.forEach(input => {
+    // Setup constraints for all  date inputs
+    const setupDateConstraints = () => {
+        DateInputs.forEach(input => {
             input.min = formatDate(dateRangeConfig.minDate);
             input.max = formatDate(dateRangeConfig.maxDate);
             
@@ -111,7 +111,7 @@ const configureDateInputs = () => {
     // Initial setup
     setDefaultDates();
     updateDateConstraints();
-    setupRentalDateConstraints();
+    setupDateConstraints();
 };
 
 // Initialize when DOM is loaded

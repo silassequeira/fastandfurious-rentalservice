@@ -3,11 +3,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Remove todas as variáveis de sessão
-$_SESSION = [];
-
-// Destrói a sessão
-session_destroy();
+$_SESSION['logged_in'] = false;
+$_SESSION['user'] = null;
+$_SESSION['admin'] = null;
+session_unset();     // remove all session variables
+session_destroy();   // destroy the session
 
 // Remove o cookie de sessão (opcional, para garantir que o cliente não guarda informações antigas)
 if (ini_get("session.use_cookies")) {

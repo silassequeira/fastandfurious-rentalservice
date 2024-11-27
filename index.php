@@ -49,7 +49,7 @@ include 'checkSession.php';
         }
         ?>
         <div class="container redBackground">
-            <form method="GET" action="index_scriptForm.php">
+            <form method="POST" action="index_scriptForm.php">
                 <h2 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h2>
 
                 <div class="infoFlex">
