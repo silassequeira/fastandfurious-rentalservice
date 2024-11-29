@@ -1,12 +1,5 @@
 <?php
-session_start();
-$str = "dbname=postgres user=postgres password=postgres host=localhost port=5432";
-
-$connection = pg_connect($str);
-if (!$connection) {
-    die("Erro na conexão");
-}
-
+require 'checkSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -27,13 +20,22 @@ if (!$connection) {
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
-        <nav>
-            <label for="saldo" id="saldo">Saldo:<php echo $saldo></label>
-            <a href="#" id="reservas">Gerir Reservas</a>
-            <label for="username">
-                <php echo $user>
-            </label>
-        </nav>
+        <?php
+        global $sessionCheck;
+        if (isset($_SESSION['user'])) {
+            $userDetails = $sessionCheck['details'];
+            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
+            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+            echo '<a href="logout.php">Terminar Sessão</a>';
+        } elseif (isset($_SESSION['admin'])) {
+            header('Location: admin_visualizeAllCars.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Por favor, faça login para reservar um carro" . pg_last_error($connection);
+            header('Location: register.php');
+            exit();
+        }
+        ?>
     </header>
 
     <main>
@@ -75,7 +77,6 @@ if (!$connection) {
             <?php
             $sqrFiltro = 'SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000';
 
-            // If filtering conditions are set, modify the query
             if (isset($_GET['min-price'])) {
                 $minprice = $_GET['min-price'];
                 $sqrFiltro .= " AND valordiario > $minprice";
@@ -88,10 +89,8 @@ if (!$connection) {
                 $brand = $_GET['car-brand'];
                 $sqrFiltro .= " AND marca = '$brand'";
             }
-            // Always add this condition
             $sqrFiltro .= ' AND ocultado = FALSE';
 
-            // Execute the query
             $ID_filtro = pg_query($connection, $sqrFiltro);
 
             if ($ID_filtro) {

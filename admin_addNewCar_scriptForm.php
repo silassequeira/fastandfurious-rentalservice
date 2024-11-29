@@ -2,9 +2,7 @@
 session_start();
 include 'criar_Id.php';  // Include the ID generation script
 
-// Database connection
 $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
-
 if (!$connection) {
     die("Erro na conexão");
 }

@@ -1,5 +1,5 @@
 <?php
-include 'checkSession.php';
+require 'checkSession.php';
 ?>
 
 <!DOCTYPE html>
@@ -21,16 +21,15 @@ include 'checkSession.php';
         <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
 
         <?php
-        if ($sessionCheck) {
-            if ($sessionCheck['type'] === 'user') {
-                $userDetails = $sessionCheck['details'];
-                echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
-                echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
-                echo '<a href="logout.php">Terminar Sessão</a>';
-            } elseif ($sessionCheck['type'] === 'admin') {
-                header('Location: admin_visualizeAllCars.php');
-                exit();
-            }
+        global $sessionCheck;
+        if (isset($_SESSION['user'])) {
+            $userDetails = $sessionCheck['details'];
+            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
+            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+            echo '<a href="logout.php">Terminar Sessão</a>';
+        } elseif (isset($_SESSION['admin'])) {
+            header('Location: admin_visualizeAllCars.php');
+            exit();
         } else {
             echo $str = '
             <nav>
@@ -62,34 +61,11 @@ include 'checkSession.php';
                         <input type="date" id="datafim" class="input disableSelect" name="datafim" onkeydown="return false;" required>
                     </div>
                 </div>
-        </div>
-
-        <button class="button centered-marginTop redFont whiteBackground" type="submit"
-            id="buttonSearch">Pesquisar</button>
-        </form>
+                <input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitDate" value="Pesquisar" id="submitDate">
+            </form>
         </div>
     </main>
     <script src="javascript/dateInputFormatter.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dateInputs = document.querySelectorAll('.input[type="date"]');
-
-            if (dateInputs.length === 0) {
-                console.error('No date inputs found with the selector .input[type="date"].');
-                return;
-            }
-
-            dateInputs.forEach((dateInput) => {
-                dateInput.addEventListener('focus', (e) => {
-                    e.target.blur();
-                    setTimeout(() => e.target.focus(), 0);
-                });
-
-                dateInput.addEventListener('selectstart', (e) => e.preventDefault());
-            });
-        });
-    </script>
 </body>
 
 </html>

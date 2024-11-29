@@ -1,3 +1,8 @@
+
+<?php
+require 'checkSession.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -16,11 +21,22 @@
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
-        <nav>
-            <label for="saldo" id="saldo">Saldo:</label>
-            <a href="#" id="reservas">Gerir Reservas</a>
-            <label for="username"></label>
-        </nav>
+        <?php
+        global $sessionCheck;
+        if (isset($_SESSION['user'])) {
+            $userDetails = $sessionCheck['details'];
+            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
+            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+            echo '<a href="logout.php">Terminar Sessão</a>';
+        } elseif (isset($_SESSION['admin'])) {
+            header('Location: admin_visualizeAllCars.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Por favor, faça login para reservar um carro" . pg_last_error($connection);
+            header('Location: register.php');
+            exit();
+        }
+        ?>
     </header>
 
     <main>

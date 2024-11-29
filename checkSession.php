@@ -12,7 +12,7 @@ function checkSession($connection)
         $usernameInput = $_SESSION['user'];
         $query = pg_query_params(
             $connection,
-            "SELECT name, saldo, username FROM cliente WHERE username = $1 OR email = $1",
+            "SELECT name, email, saldo, username FROM cliente WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
