@@ -1,3 +1,7 @@
+<?php
+require 'checkSession.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -13,24 +17,29 @@
 </head>
 
 <body>
-    <php
-        session_start();
-        $user=$_SESSION['user'];
-        >
     <header>
         <a href="#" class="logo">Fast & Furious Cars Inc.</a>
 
-        <nav>
-            <a href="#" id="statistics">Ver Estatísticas</a>
-            <label for="username-admin"><php echo $user></label>
-        </nav>
+        <?php
+        global $sessionCheck;
+        if (isset($_SESSION['admin'])) {
+            $adminDetails = $sessionCheck['details'];
+            echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
+            echo '<a href="admin_addNewCar.php">Adicionar Carro</a>';
+            echo '<a href="admin_stats.php">Ver Estatísticas</a>';
+            echo '<a href="logout.php">Terminar Sessão</a>';
+        } else {
+            $_SESSION['error'] = "Sem permissões suficientes para acessar esta página" . pg_last_error($connection);
+            header('Location: logout.php');
+            exit();
+        }
+        ?>
     </header>
 
     <main>
 
         <div class="infoFlex">
-            <a href="#" class="back"> &lt; Voltar</a>
-            <a href="#" class="back"> &gt; Adicionar Carro ></a>
+            <a href="#" class="back"> &gt; Adicionar Carro </a>
         </div>
 
 

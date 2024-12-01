@@ -29,11 +29,12 @@ require 'checkSession.php';
             echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
             echo '<a href="logout.php">Terminar Sessão</a>';
         } elseif (isset($_SESSION['admin'])) {
+            $_SESSION['error'] = "Só consegue aceder a esta página com as credenciais de cliente" . pg_last_error($connection);
             header('Location: admin_visualizeAllCars.php');
             exit();
         } else {
             $_SESSION['error'] = "Por favor, faça login para reservar um carro" . pg_last_error($connection);
-            header('Location: register.php');
+            header('Location: index.php');
             exit();
         }
         ?>

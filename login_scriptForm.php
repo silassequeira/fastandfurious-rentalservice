@@ -44,7 +44,7 @@ if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['admin'] = $usernameInput;
             $_SESSION['logged_in'] = true;
             $_SESSION['success'] = "Autenticação bem-sucedida como administrador";
-            header('Location: admin_dashboard.php');
+            header('Location: admin_visualizeAllCars.php');
             exit();
         } else {
             $_SESSION['error'] = "Senha ou administrador incorretos" . pg_last_error($connection);

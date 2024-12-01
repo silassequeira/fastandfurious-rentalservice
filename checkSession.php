@@ -27,7 +27,7 @@ function checkSession($connection)
         $usernameInput = $_SESSION['admin'];
         $query = pg_query_params(
             $connection,
-            "SELECT name, username FROM administrador WHERE username = $1 OR email = $1",
+            "SELECT name, email, username FROM administrador WHERE username = $1 OR email = $1",
             array($usernameInput)
         );
 
