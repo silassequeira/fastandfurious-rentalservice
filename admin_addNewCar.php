@@ -46,13 +46,13 @@ require 'checkSession.php';
             unset($_SESSION['error']);
         }
         ?>
-        
+
         <div class="infoFlex">
             <a href="#" class="back"> &lt; Voltar</a>
             <h2>Adicionar Carro</h2>
         </div>
 
-        <form method="POST" action="admin_addNewCar_scriptForm.php">
+        <form method="POST" action="admin_addNewCar_scriptForm.php" enctype="multipart/form-data">
             <div class="layoutGrid">
 
                 <div class="infoFlex column">
