@@ -24,8 +24,12 @@ require 'checkSession.php';
         global $sessionCheck;
         if (isset($_SESSION['user'])) {
             $userDetails = $sessionCheck['details'];
+            $reservationDetails = $_SESSION['reservation_data'];
             echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
             echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+            echo '<p>' . htmlspecialchars($reservationDetails['id']) . '</p>';
+            echo '<p>' . htmlspecialchars($reservationDetails['datainicio']) . '</p>';
+            echo '<p>' . htmlspecialchars($reservationDetails['datafim']) . '</p>';
             echo '<a href="logout.php">Terminar Sessão</a>';
         } elseif (isset($_SESSION['admin'])) {
             $_SESSION['error'] = "Só consegue aceder a esta página com as credenciais de cliente" . pg_last_error($connection);
@@ -42,90 +46,35 @@ require 'checkSession.php';
     <main>
 
         <div class="infoFlex">
-            <a href="#" class="back"> &lt; Voltar</a>
+            <a href="index.php" class="back"> &lt; Voltar</a>
             <h2>Selecione o seu veículo</h2>
         </div>
 
         <div class="layoutGrid">
             <div class="infoFlex column">
-                <h5>Filtros</h5>
-                <h6>Preço Total</h6>
-                <div class="infoFlex">
-                    <label for="min-price">Preço Mínimo</label>
-                    <input type="number" id="min-price" name="min-price" placeholder="Preço Mínimo">
-                    <label for="max-price">Preço Máximo</label>
-                    <input type="number" id="max-price" name="max-price" placeholder="Preço Máximo">
+                <div class="carContainer layoutGrid">
+                    <?php
+                    require 'viewAllCars.php';
+                    if (!empty($cars)) {
+                        foreach ($cars as $car) {
+                            echo '<div class="car-item">';
+                            echo '<img src="' . htmlspecialchars($car['foto']) . '" alt="Imagem do carro">';
+                            echo '<h3>' . htmlspecialchars($car['marca']) . '</h3>';
+                            echo '<p>Modelo: ' . htmlspecialchars($car['modelo']) . '</p>';
+                            echo '<p>Ano: ' . htmlspecialchars($car['ano']) . '</p>';
+                            echo '<p>Assentos: ' . htmlspecialchars($car['assentos']) . '</p>';
+                            echo '<p>Preço Diário: R$ ' . htmlspecialchars($car['valordiario']) . '</p>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>Nenhum carro encontrado.</p>';
+                    }
+                    ?>
                 </div>
-                <h6>Características</h6>
-                <label for="car-brand">Marca</label>
-                <select name="car-brand" required>
-                    <option value="brand"></option>
-                    <option value="brand"></option>
-                    <option value="brand"></option>
-                    <option value="brand"></option>
-                </select><br>
-                <label for="car-seats">Números de Lugares</label>
-                <select name="car-seats" required>
-                    <option value="seats"></option>
-                    <option value="seats"></option>
-                    <option value="seats"></option>
-                    <option value="seats"></option>
-                </select><br>
-
-                <button type="submit" name="filter">Filtrar</button>
             </div>
+        </div>
+        </div>
 
-            <?php
-            $sqrFiltro = 'SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000';
-
-            if (isset($_GET['min-price'])) {
-                $minprice = $_GET['min-price'];
-                $sqrFiltro .= " AND valordiario > $minprice";
-            }
-            if (isset($_GET['max-price'])) {
-                $maxprice = $_GET['max-price'];
-                $sqrFiltro .= " AND valordiario < $maxprice";
-            }
-            if (isset($_GET['car-brand'])) {
-                $brand = $_GET['car-brand'];
-                $sqrFiltro .= " AND marca = '$brand'";
-            }
-            $sqrFiltro .= ' AND ocultado = FALSE';
-
-            $ID_filtro = pg_query($connection, $sqrFiltro);
-
-            if ($ID_filtro) {
-                foreach (pg_fetch_all($ID_filtro) as $row) {
-            ?>
-                    <div class="infoFlex column">
-                        <div class="carContainer layoutGrid">
-                            <div class="imgContainer">
-                                <img src="#" alt="img-alt">
-                            </div>
-                            <div class="infoFlex">
-                                <h3><?php echo htmlspecialchars($row['nome']); ?></h3>
-                                <h6>Ano</h6>
-                                <h5><?php echo htmlspecialchars($row['ano']); ?></h5>
-                                <h6>Numero de Lugares</h6>
-                                <h5><?php echo htmlspecialchars($row['assentos']); ?></h5>
-                                <h6>Marca</h6>
-                                <h5><?php echo htmlspecialchars($row['marca']); ?></h5>
-                                <h6>Modelo</h6>
-                                <h5><?php echo htmlspecialchars($row['modelo']); ?></h5>
-                            </div>
-                            <div class="infoFlex">
-                                <h6>Preço</h6>
-                                <h5><?php echo htmlspecialchars($row['valordiario']); ?></h5>
-                                <button type="submit" name="rent">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-            <?php
-                }
-            } else {
-                echo "Erro na consulta: " . pg_last_error($connection);
-            }
-            ?>
     </main>
 </body>
 

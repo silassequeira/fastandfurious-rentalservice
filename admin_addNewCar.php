@@ -24,6 +24,8 @@ require 'checkSession.php';
         <?php
         global $sessionCheck;
         global $connection;
+
+        
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
             echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';

@@ -12,18 +12,16 @@ $sessionCheck = checkSession($connection);
 if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
     $datainicioInput = $_POST['datainicio'];
     $datafimInput = $_POST['datafim'];
-    $userDetails = $sessionCheck['details'];
-    $username = $userDetails['username'];
-    $email = $userDetails['email'];
 
-    $idReserva = generateUniqueId($connection, 'reserva_', 'id_reserva');
-    $_SESSION['idReserva'] = $idReserva;
+    $idReserva = generateUniqueId($connection, 'reserva', 'idreserva');
 
-    $sql = " INSERT INTO reserva_ (id_reserva, datainicio, datafim, cliente_username, cliente_email) VALUES ($1, $2, $3, $4, $5)";
-    $params = array($idReserva, $datainicioInput, $datafimInput, $username, $email);
-    $result = pg_query_params($connection, $sql, $params);
+    $_SESSION['reservation_data'] = [
+        'id' => $idReserva,
+        'datainicio' => $datainicioInput,
+        'datafim' => $datafimInput,
+    ];
 
-    if ($result) {
+    if (isset($_SESSION['reservation_data'])) {
         $_SESSION['success'] = "Data de início e data de fim registradas com sucesso!";
         header('Location: user_selectCar.php');
         exit();

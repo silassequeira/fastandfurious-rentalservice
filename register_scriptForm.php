@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
         exit();
     }
 
+
     if (strpos($emailInput, '.admin') !== false) {
         $sql = "INSERT INTO administrador (username, email, password, name) VALUES ($1, $2, $3, $4)";
         $resultAdmin = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput));
@@ -47,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
         }
     } else {
         $randomSaldo = rand(400, 1200);
-        $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, 0)";
+        $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, $5)";
         $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput, $randomSaldo));
 
         if ($resultUser) {

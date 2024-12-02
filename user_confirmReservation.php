@@ -42,7 +42,7 @@ require 'checkSession.php';
 
     <main>
         <div class="infoFlex">
-            <a href="#" class="back"> &lt; Voltar</a>
+            <a href="index.php" class="back"> &lt; Voltar</a>
             <h2>Confirme a sua Reserva</h2>
         </div>
 

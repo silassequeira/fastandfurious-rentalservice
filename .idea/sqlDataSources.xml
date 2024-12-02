@@ -2,10 +2,34 @@
 <project version="4">
   <component name="DdlMappings">
     <mapping uuid="5169c119-1b99-40fd-a6ff-97fd113cd072" name="postgres@localhost Mapping">
-      <data-sources db="a1d9957e-7e0c-4a8a-983a-ae4727d8d35c" ddl="b364601d-5ab6-424b-b421-51e579afd6ac" />
+      <data-sources db="a1d9957e-7e0c-4a8a-983a-ae4727d8d35c" ddl="234d6b79-e4d5-4714-bd7f-ff67fbb09bef" />
       <scope>
         <node kind="database" negative="1" />
       </scope>
     </mapping>
+    <mapping uuid="f9534482-f6a0-404d-88b6-27439d9cc78d" name="postgres@localhost Mapping [2]">
+      <data-sources db="12403edc-d27e-4c71-b10a-6e28fc3c4598" ddl="b42a2768-dad8-4140-a1c5-fce3329818d6" />
+      <scope>
+        <node kind="database" negative="1" />
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="b42a2768-dad8-4140-a1c5-fce3329818d6" />
+          <option name="name" value="postgres@localhost (DDL)" />
+          <option name="dbmsName" value="POSTGRES" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$" />
+            </array>
+          </option>
+          <option name="group" value="C:\Users\silas\fastandfurious-SI\public" />
+          <option name="outLayout" value="File per object by schema.groovy" />
+        </State>
+      </list>
+    </option>
   </component>
 </project>

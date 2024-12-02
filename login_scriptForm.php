@@ -59,4 +59,3 @@ if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 pg_close($connection);
-?>

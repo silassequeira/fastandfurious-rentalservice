@@ -18,31 +18,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar']) && is
     $priceInput = $_POST['valordiario'];
     $adminDetails = $sessionCheck['details'];
     $username = $adminDetails['username'];
+    $email = $adminDetails['email'];
 
-    $idCarro = generateUniqueId($connection, 'carro', 'id_carro_');
+    $idCarro = generateUniqueId($connection, 'carro', 'idcarro');
 
     $file_name = $_FILES['foto']['name'];
     $file_temporaryPath = $_FILES['foto']['tmp_name'];
 
     $target_dir = "uploads/" . $idCarro . "/";
 
-    // Create directory if not exists
     if (!is_dir($target_dir)) {
         mkdir($target_dir, 0777, true);
     }
-    
     $file_name = basename($_FILES['foto']['name']);
     $file_destination = $target_dir . $file_name;
     
-    // Sanitize file path
     $file_destination = str_replace("/", DIRECTORY_SEPARATOR, $file_destination);
     $file_destination = str_replace("\\", DIRECTORY_SEPARATOR, $file_destination);
     
     if (move_uploaded_file($_FILES['foto']['tmp_name'], $file_destination)) {
-        // Successful upload
         $imageInput = $file_destination;
     } else {
-        // Detailed error logging
         error_log("Move failed. Source: " . $_FILES['foto']['tmp_name']);
         error_log("Destination: " . $file_destination);
         error_log("Full error: " . print_r(error_get_last(), true));
@@ -52,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar']) && is
         exit();
     }
 
-    $sql = "INSERT INTO carro (id_carro_, marca, modelo, assentos, valordiario, administrador_username, foto, ano) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
-    $params = array($idCarro, $brandInput, $modelInput, $seatsInput, $priceInput, $username, $imageInput, $yearInput);
+    $sql = "INSERT INTO carro (idcarro, foto, marca, modelo, ano, assentos, valordiario, administrador_username, administrador_email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
+    $params = array($idCarro, $imageInput, $brandInput, $modelInput, $yearInput, $seatsInput, $priceInput, $username, $email);
     $result = pg_query_params($connection, $sql, $params);
     
 
