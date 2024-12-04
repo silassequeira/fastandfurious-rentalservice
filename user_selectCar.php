@@ -55,20 +55,6 @@ require 'checkSession.php';
                 <div class="carContainer layoutGrid">
                     <?php
                     require 'viewAllCars.php';
-                    if (!empty($cars)) {
-                        foreach ($cars as $car) {
-                            echo '<div class="car-item">';
-                            echo '<img src="' . htmlspecialchars($car['foto']) . '" alt="Imagem do carro">';
-                            echo '<h3>' . htmlspecialchars($car['marca']) . '</h3>';
-                            echo '<p>Modelo: ' . htmlspecialchars($car['modelo']) . '</p>';
-                            echo '<p>Ano: ' . htmlspecialchars($car['ano']) . '</p>';
-                            echo '<p>Assentos: ' . htmlspecialchars($car['assentos']) . '</p>';
-                            echo '<p>Preço Diário: R$ ' . htmlspecialchars($car['valordiario']) . '</p>';
-                            echo '</div>';
-                        }
-                    } else {
-                        echo '<p>Nenhum carro encontrado.</p>';
-                    }
                     ?>
                 </div>
             </div>

@@ -22,6 +22,7 @@ require 'checkSession.php';
 
         <?php
         global $sessionCheck;
+        global $connection;
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
             echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
@@ -47,26 +48,8 @@ require 'checkSession.php';
             <div class="carContainer layoutGrid">
                 <?php
                 require 'viewAllCars.php';
-                if (!empty($cars)) {
-                    foreach ($cars as $car) {
-                        echo '<div class="car-item">';
-                        echo '<img src="' . htmlspecialchars($car['foto']) . '" alt="Imagem do carro">';
-                        echo '<h3>' . htmlspecialchars($car['marca']) . '</h3>';
-                        echo '<p>Modelo: ' . htmlspecialchars($car['modelo']) . '</p>';
-                        echo '<p>Ano: ' . htmlspecialchars($car['ano']) . '</p>';
-                        echo '<p>Assentos: ' . htmlspecialchars($car['assentos']) . '</p>';
-                        echo '<p>Preço Diário: R$ ' . htmlspecialchars($car['valordiario']) . '</p>';
-                        echo '</div>';
-                    }
-                } else {
-                    echo '<p>Nenhum carro encontrado.</p>';
-                }
                 ?>
-                <button type="submit" name="modify">Alterar</button>
-                <button type="submit" name="history">Historico</button>
-                <button type="submit" name="hide">Ocultar</button>
             </div>
-        </div>
         </div>
     </main>
 </body>

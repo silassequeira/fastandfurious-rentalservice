@@ -25,7 +25,7 @@ require 'checkSession.php';
         global $sessionCheck;
         global $connection;
 
-        
+
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
             echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
@@ -54,49 +54,11 @@ require 'checkSession.php';
             <h2>Adicionar Carro</h2>
         </div>
 
-        <form method="POST" action="admin_addNewCar_scriptForm.php" enctype="multipart/form-data">
-            <div class="layoutGrid">
+        <?php if (isset($_POST['submitModify'])) {
 
-                <div class="infoFlex column">
-                    <div class="inputContainer">
-                        <label for="foto">Adicionar Nova Imagem do Veículo</label>
-                        <input type="file" id="foto" accept="image/png, image/jpg, image/jpeg" name="foto" required>
-                        <div id="preview-container">
-                            <p>No image selected</p>
-                        </div>
-                        <div id="error-message" style="color: red;"></div>
-                    </div>
-                    <div class="inputContainer">
-                        <label for="marca">Marca</label>
-                        <input type="text" id="marca" name="marca" required>
-                    </div>
-                    <div class="inputContainer">
-                        <label for="modelo">Modelo</label>
-                        <input type="text" id="modelo" name="modelo" required>
-                    </div>
-                    <div class="inputContainer">
-                        <label for="ano">Ano</label>
-                        <input type="number" id="ano" name="ano" min="1900" max="2100" required>
-                    </div>
-                    <div class="inputContainer">
-                        <label for="assentos">Números de Lugares</label>
-                        <select id="assentos" name="assentos" required>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="inputContainer">
-                        <label for="valordiario">Preço Diário</label>
-                        <input type="text" id="valordiario" name="valordiario" required>
-                    </div>
-
-                    <div class="buttonContainer">
-                        <input type="submit" name="submitNewCar" value="Guardar" id="submitNewCar" disabled>
-                    </div>
-                </div>
-        </form>
+        }
+        ?>
+        <?php require 'admin_addNewCar_script.php'; ?>
     </main>
     <script src="javascript/imagePreview.js"></script>
     <script src="javascript/enableSubmitButton.js"></script>
