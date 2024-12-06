@@ -13,7 +13,7 @@ if (!$result) {
 }
 
 // numero de carros disponiveis
-$sqlNcd = "SELECT count(*) FROM carro WHERE status_ = true";
+$sqlNcd = "SELECT count(*) FROM carro WHERE arrendado = true";
 $result1 = pg_query($connection, $sqlNcd);
 
 if (!$result1) {
@@ -21,7 +21,7 @@ if (!$result1) {
 }
 
 // numero de reservas
-$sqlNcr = "SELECT count(*) FROM reserva_";
+$sqlNcr = "SELECT count(*) FROM reserva";
 $result2 = pg_query($connection, $sqlNcr);
 
 if (!$result2) {
@@ -37,7 +37,7 @@ if (!$result3) {
 }
 
 //numero de utilizadores que já fizeram reservas
-$sqlNcur = "SELECT COUNT(DISTINCT cliente_username) FROM reserva_";
+$sqlNcur = "SELECT COUNT(DISTINCT cliente_username) FROM reserva";
 $result4 = pg_query($connection, $sqlNcur);
 
 if (!$result4) {

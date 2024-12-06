@@ -45,9 +45,6 @@ require 'admin_stats_script.php';
             <h2>Estatísticas</h2>
         </div>
 
-        <label for="date">Data</label>
-        <input type="date" name="date" id="date">
-
         <div class="layoutGrid">
             <div class="infoFlex column">
                 <div class="container">
