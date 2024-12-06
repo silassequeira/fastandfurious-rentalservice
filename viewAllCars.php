@@ -1,10 +1,9 @@
 <?php
+
 $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
 if (!$connection) {
     die("Erro na conexão");
 }
-
-$sessionCheck = checkSession($connection);
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -22,7 +21,7 @@ $_SESSION['cars'] = [];
 foreach ($cars as $index => $car) {
     $_SESSION['cars'][$index] = $car;
     $_SESSION['cars'][$index]['ocultado'] = $car['ocultado'] === 't' ? 'Revelar' : 'Ocultar';
-    $_SESSION['cars'][$index]['status'] = $car['ocultado'] === 't' ? 'Arrendado' : 'Por Arrendar';
+    $_SESSION['cars'][$index]['arrendado'] = $car['arrendado'] === 't' ? 'Arrendado' : 'Por Arrendar';
 }
 
 
@@ -34,13 +33,14 @@ foreach ($_SESSION['cars'] as $index => $car) {
     } else {
         $str = '<div class="car-item">';
     }
-        $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+    $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
         '<h3>' . $car['marca'] . '</h3>' .
         '<p>Modelo: ' . $car['modelo'] . '</p>' .
         '<p>Ano: ' . $car['ano'] . '</p>' .
         '<p>Assentos: ' . $car['assentos'] . '</p>' .
-        '<p>Preço Diário: R$ ' . $car['valordiario'] . '</p>' .
-        '<form method="post" action="admin_visualizeAllCars.php">' .
+        '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
+        '<p>' . $car['arrendado'] . '</p>' .
+        '<form method="POST">' .
         '<input type="hidden" name="car_id" value="' . $car['idcarro'] . '">';
 
     if (isset($_SESSION['admin'])) {
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitHide']) && isse
     $updateSql = "UPDATE carro SET ocultado = $2 WHERE idcarro = $1";
     $params = array($carId, $hidden);
     $result = pg_query_params($connection, $updateSql, $params);
-    
+
 
     if (!$result) {
         die("Erro ao ocultar carro: " . pg_last_error($connection));
@@ -119,21 +119,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitErase']) && iss
     header("Location: admin_visualizeAllCars.php");
     exit();
 }
+function calculateTotalPrice($startDate, $endDate, $pricePerDay)
+{
+    try {
+        $start = new DateTime($startDate);
+        $end = new DateTime($endDate);
 
+        // Calculate the interval in days
+        $interval = $start->diff($end);
+        $days = $interval->days + 1; // +1 to include both start and end days
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRent']) && isset($_POST['car_id'])) {
+        // Calculate total price
+        $totalPrice = $days * $pricePerDay;
+
+        return $totalPrice;
+    } catch (Exception $e) {
+        // Handle invalid date formats
+        return "Erro: " . $e->getMessage();
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRent']) && isset($_POST['car_id']) && isset($_SESSION['reservation_data'])) {
     $carId = $_POST['car_id'];
+    $_SESSION['reservation_data']['carro_idcarro'] = $carId;
 
-    // Find the car in the session data
+    // Validate and find the car in the session
+    if (!isset($_SESSION['cars']) || !is_array($_SESSION['cars'])) {
+        $_SESSION['error'] = "Nenhum carro disponível para seleção.";
+        header('Location: user_reservations.php');
+        exit();
+    }
+
+    $selectedCar = null;
     foreach ($_SESSION['cars'] as $car) {
         if ($car['idcarro'] == $carId) {
-            $_SESSION['selected_car'] = $car;
+            $selectedCar = $car;
             break;
         }
     }
+
+    if (!$selectedCar) {
+        $_SESSION['error'] = "Erro ao selecionar o carro";
+        header('Location: user_reservations.php');
+        exit();
+    }
+
+    $_SESSION['selected_car'] = $selectedCar;
+
+    // Validate reservation data
+    if (!isset($_SESSION['reservation_data']['datainicio'], $_SESSION['reservation_data']['datafim'])) {
+        $_SESSION['error'] = "Datas de reserva não definidas.";
+        header('Location: user_reservations.php');
+        exit();
+    }
+
+    $datainicio = $_SESSION['reservation_data']['datainicio'];
+    $datafim = $_SESSION['reservation_data']['datafim'];
+    $pricePerDay = $selectedCar['valordiario'];
+
+    // Calculate the total price
+    $totalPrice = calculateTotalPrice($datainicio, $datafim, $pricePerDay);
+
+    // Check for errors from the calculation
+    if (is_string($totalPrice) && str_contains($totalPrice, "Erro")) {
+        $_SESSION['error'] = $totalPrice; // Pass the error message from the function
+        header('Location: user_reservations.php');
+        exit();
+    }
+
+    $_SESSION['reservation_data']['custototal'] = $totalPrice;
+
+    // Redirect to the confirmation page
     header('Location: user_confirmReservation.php');
     exit();
 }
-
 
 pg_close($connection);

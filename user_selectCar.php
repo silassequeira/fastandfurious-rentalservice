@@ -25,6 +25,7 @@ require 'checkSession.php';
         if (isset($_SESSION['user'])) {
             $userDetails = $sessionCheck['details'];
             $reservationDetails = $_SESSION['reservation_data'];
+            echo '<a href="user_reservations.php">Reservas</a>';
             echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
             echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
             echo '<p>' . htmlspecialchars($reservationDetails['id']) . '</p>';

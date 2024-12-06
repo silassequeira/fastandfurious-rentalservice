@@ -1,4 +1,3 @@
-
 <?php
 require 'checkSession.php';
 ?>
@@ -46,34 +45,45 @@ require 'checkSession.php';
             <h2>Confirme a sua Reserva</h2>
         </div>
 
+
+
         <div class="layoutGrid">
-            <div class="imgContainer">
-                <img src="#" alt="img-alt">
-            </div>
             <div class="infoFlex">
-                <h3 value="car-name"></h3>
-                <h6>Ano</h6>
-                <h5 value="car-year"></h5>
-                <h6>Numero de Lugares</h6>
-                <h5 value="seats"></h5>
-                <h6>Marca</h6>
-                <h5 value="brand"></h5>
-                <h6>Modelo</h6>
-                <h5 value="model"></h5>
-                <p>Data de Levantamento</p>
-                <input type="date" id="pickupDate" name="pickupDate">
-                <label for="pickupDate" placeholder="26/10/2024"></label>
-                <p>Hora</p>
-                <input type="date" id="pickupHour" name="pickupHour">
-                <label for="pickupHour" placeholder="22:00"></label>
-                <p>Data de Entrega</p>
-                <input type="date" id="dropDate" name="dropDate">
-                <label for="dropDate" placeholder="29/10/2024"></label>
-                <p>Data de Levantamento</p>
-                <input type="date" id="dropHour" name="dropHour">
-                <label for="dropHour" placeholder="14:30"></label>
-                <h4 value="total-price">Preço Total:</h4>
-                <button type="submit" id="payment">Pagamento</button>
+                <?php
+                $car = $_SESSION['selected_car'] ?? null;
+                $details = $_SESSION['reservation_data'] ?? null;
+
+                $str = '<div class="car-item">';
+
+                if (isset($_SESSION['error'])) {
+                    echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
+                    unset($_SESSION['error']);
+                }
+                
+                $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+                    '<h3>' . $car['marca'] . '</h3>' .
+                    '<p>Modelo: ' . $car['modelo'] . '</p>' .
+                    '<p>Ano: ' . $car['ano'] . '</p>' .
+                    '<p>Assentos: ' . $car['assentos'] . '</p>' .
+                    '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
+                    '<p>id reserva: ' . $details['id'] . '' .
+                    '<p>Data de Levantamento: ' . $details['datainicio'] . '' .
+                    '<p>Data de Entrega: ' . $details['datafim'] . '' .
+                    '<p>id carro: ' . $details['carro_idcarro'] . '' .
+                    '<p>Total: ' . $details['custototal'] . '</p>' .
+                    '<form method="POST" action="user_confirmReservation_script.php">' .
+                    '<input type="hidden" name="car_id" value="' . $details['carro_idcarro'] . '">' .
+                    '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitConfirmReservation" value="Confirmar" id="submitConfirmReservation">' .
+                    '</form>' .
+                    '</div>';
+
+                echo $str;
+                ?>
+
+                <?php
+
+                ?>
+
             </div>
         </div>
     </main>

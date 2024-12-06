@@ -25,7 +25,6 @@ require 'checkSession.php';
         global $sessionCheck;
         global $connection;
 
-
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
             echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
@@ -54,10 +53,6 @@ require 'checkSession.php';
             <h2>Adicionar Carro</h2>
         </div>
 
-        <?php if (isset($_POST['submitModify'])) {
-
-        }
-        ?>
         <?php require 'admin_addNewCar_script.php'; ?>
     </main>
     <script src="javascript/imagePreview.js"></script>

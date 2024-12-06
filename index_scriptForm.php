@@ -12,6 +12,10 @@ $sessionCheck = checkSession($connection);
 if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
     $datainicioInput = $_POST['datainicio'];
     $datafimInput = $_POST['datafim'];
+    $userDetails = $sessionCheck['details'];
+    $username = $userDetails['username'];
+    $email = $userDetails['email'];
+    $saldo = $userDetails['saldo'];
 
     $idReserva = generateUniqueId($connection, 'reserva', 'idreserva');
 
@@ -19,6 +23,9 @@ if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isse
         'id' => $idReserva,
         'datainicio' => $datainicioInput,
         'datafim' => $datafimInput,
+        'saldo'=> $saldo,
+        'cliente_username' => $username,
+        'cliente_email'=> $email
     ];
 
     if (isset($_SESSION['reservation_data'])) {
