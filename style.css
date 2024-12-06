@@ -327,6 +327,14 @@ a .redBackground:hover {
     display: block;
 }
 
+.Ocultar {
+    display: block;
+}
+
+.Revelar {
+    display: none;
+}
+
 @media (max-width: 995px) {
 
     a {

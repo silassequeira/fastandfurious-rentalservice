@@ -25,10 +25,16 @@ foreach ($cars as $index => $car) {
     $_SESSION['cars'][$index]['status'] = $car['ocultado'] === 't' ? 'Arrendado' : 'Por Arrendar';
 }
 
+
 // Display cars with a form to select a specific car
 foreach ($_SESSION['cars'] as $index => $car) {
-        $str = '<div class="car-item">' .
-        '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+
+    if (isset($_SESSION['user'])) {
+        $str = '<div class="car-item ' . $car['ocultado'] . '">';
+    } else {
+        $str = '<div class="car-item">';
+    }
+        $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
         '<h3>' . $car['marca'] . '</h3>' .
         '<p>Modelo: ' . $car['modelo'] . '</p>' .
         '<p>Ano: ' . $car['ano'] . '</p>' .
