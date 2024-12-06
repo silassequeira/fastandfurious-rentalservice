@@ -7,6 +7,8 @@ if (!$connection) {
     die("Erro na conexão");
 }
 
+$carSelected = $_SESSION['selected_car'] ?? null;
+
 $sessionCheck = checkSession($connection);
 
 $brandInput = $_POST['marca'];
@@ -14,6 +16,8 @@ $modelInput = $_POST['modelo'];
 $yearInput = $_POST['ano'];
 $seatsInput = $_POST['assentos'];
 $priceInput = $_POST['valordiario'];
+$hidden = 'false';
+$rented = 'false';
 $adminDetails = $sessionCheck['details'];
 $username = $adminDetails['username'];
 $email = $adminDetails['email'];
@@ -48,10 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         exit();
     }
 
-    $sql = "INSERT INTO carro (idcarro, foto, marca, modelo, ano, assentos, valordiario, administrador_username, administrador_email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
-    $params = array($carId, $imageInput, $brandInput, $modelInput, $yearInput, $seatsInput, $priceInput, $username, $email);
+    $sql = "INSERT INTO carro (idcarro, foto, marca, modelo, ano, assentos, valordiario, ocultado, arrendado, administrador_username, administrador_email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
+    $params = array($carId, $imageInput, $brandInput, $modelInput, $yearInput, $seatsInput, $priceInput, $hidden, $rented, $username, $email);
     $result = pg_query_params($connection, $sql, $params);
-
 
     if ($result) {
         $_SESSION['success'] = "Carro adicionado com sucesso!";
@@ -63,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         header('Location: admin_addNewCar.php');
         exit();
     }
-} else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitUpdateCar']) && isset($_SESSION['selected_car'])) {
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitUpdateCar']) && isset($carSelected)) {
 
-    $selectedCar = $_SESSION['selected_car'];
+    $selectedCar = $_SESSION['selected_car'] ?? null;
     $carId = $selectedCar['idcarro'];
 
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {

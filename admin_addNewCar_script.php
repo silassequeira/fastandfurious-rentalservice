@@ -1,9 +1,9 @@
 <?php
 
-$car = $_SESSION['selected_car'];
-$imagePath = '/' . $car['foto'];
+$car = $_SESSION['selected_car'] ?? null;
+$imagePath = $car ? '/' . $car['foto'] : '';
 
-if (isset($_SESSION['admin']) && isset($_SESSION['selected_car'])) {
+if (isset($_SESSION['admin']) && isset($car)) {
     $str = '<form method="POST" action="admin_addNewCar_scriptForm.php" enctype="multipart/form-data">' .
         '<div class="layoutGrid">' .
         '<div class="infoFlex column">' .
