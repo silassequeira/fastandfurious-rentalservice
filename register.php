@@ -31,31 +31,39 @@ session_start();
             unset($_SESSION['success']);
         }
         ?>
-        
+
     </header>
-    <main>
-        <a href="index.php" class="back"> &lt; Voltar</a>
+
+    <main class="centered-marginTop ">
         <div class="container">
-            <form method="POST" action="register_scriptForm.php">
-                <h2>Regista a tua Conta</h2>
-                <div class="inputContainer">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="inputContainer">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="inputContainer">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="inputContainer">
-                    <label for="name">Nome Próprio</label>
-                    <input type="text" id="name" name="name">
-                </div>
-                <div class="buttonContainer">
-                    <input type="submit" name="submitRegister" value="Registar" id="submitRegister" disabled>
+            <form id="loginForm" method="POST" action="register_scriptForm.php">
+                <h4>Regista a tua Conta</h4>
+
+                <div class="infoFlex column marginTop gap">
+                    <span class="reference">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </span>
+                    <span class="reference">
+                        <label for="email">E-mail</label>
+                        <input type="text" id="email" name="email" required>
+                    </span>
+                    <span class="reference">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </span>
+                    <span class="reference">
+                        <label for="name">Nome Próprio</label>
+                        <input type="text" id="name" name="name" required>
+                    </span>
+                    <div class="infoFlex noMargin">
+                        <span>
+                            <a class="text-light underline" href="login.php">Já tenho Conta - Log in</a>
+                        </span>
+                        <span>
+                            <input type="submit" class="noPadding" name="submitRegister" value="Registar" id="submitRegister" disabled>
+                        </span>
+                    </div>
                 </div>
             </form>
         </div>

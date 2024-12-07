@@ -29,21 +29,28 @@ session_start();
         ?>
 
     </header>
-    <main>
+    <main class="centered-marginTop ">
         <div class="container">
             <form id="loginForm" method="POST" action="login_scriptForm.php">
-                <h2>Login de conta Pessoal</h2>
-                <div class="inputContainer">
-                    <label for="username">Username ou E-mail</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="inputContainer">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="buttonContainer">
-                    <a href="register.php">Criar Conta</a>
-                    <input type="submit" name="submitLogin" value="Iniciar Sessão" id="submitLogin" disabled>
+                <h4>Login para aceder a Conta</h4>
+
+                <div class="infoFlex column marginTop gap">
+                    <span class="reference">
+                        <label for="username">Username ou E-mail</label>
+                        <input type="text" id="username" name="username" required>
+                    </span>
+                    <span class="reference">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </span>
+                    <div class="infoFlex noMargin">
+                        <span>
+                            <a href="register.php">Criar Conta</a>
+                        </span>
+                        <span>
+                            <input type="submit" class="noPadding" name="submitLogin" value="Iniciar Sessão" id="submitLogin" disabled>
+                        </span>
+                    </div>
                 </div>
             </form>
         </div>

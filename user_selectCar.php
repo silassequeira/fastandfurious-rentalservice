@@ -52,13 +52,9 @@ require 'checkSession.php';
         </div>
 
         <div class="layoutGrid">
-            <div class="infoFlex column">
-                <div class="carContainer layoutGrid">
-                    <?php
-                    require 'viewAllCars.php';
-                    ?>
-                </div>
-            </div>
+                <?php
+                require 'viewAllCars.php';
+                ?>
         </div>
         </div>
 

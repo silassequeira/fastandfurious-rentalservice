@@ -45,45 +45,78 @@ require 'checkSession.php';
             <h2>Confirme a sua Reserva</h2>
         </div>
 
+        <?php
+        if (isset($_SESSION['error'])) {
+            echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
+            unset($_SESSION['error']);
+        }
+        ?>
 
+        <div class="centered-marginTop">
+            <?php
+            $car = $_SESSION['selected_car'] ?? null;
+            $details = $_SESSION['reservation_data'] ?? null;
 
-        <div class="layoutGrid">
-            <div class="infoFlex">
-                <?php
-                $car = $_SESSION['selected_car'] ?? null;
-                $details = $_SESSION['reservation_data'] ?? null;
+            $str = '<div class="car-item">' .
+                '<div class="imgContainer">' .
+                '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+                '</div>' .
 
-                $str = '<div class="car-item">';
+                '<h3 class="centered-marginTop">' . $car['marca'] . ' ' . $car['modelo'] . '</h3>' .
 
-                if (isset($_SESSION['error'])) {
-                    echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
-                    unset($_SESSION['error']);
-                }
-                
-                $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
-                    '<h3>' . $car['marca'] . '</h3>' .
-                    '<p>Modelo: ' . $car['modelo'] . '</p>' .
-                    '<p>Ano: ' . $car['ano'] . '</p>' .
-                    '<p>Assentos: ' . $car['assentos'] . '</p>' .
-                    '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
-                    '<p>id reserva: ' . $details['id'] . '' .
-                    '<p>Data de Levantamento: ' . $details['datainicio'] . '' .
-                    '<p>Data de Entrega: ' . $details['datafim'] . '' .
-                    '<p>id carro: ' . $details['carro_idcarro'] . '' .
-                    '<p>Total: ' . $details['custototal'] . '</p>' .
-                    '<form method="POST" action="user_confirmReservation_script.php">' .
-                    '<input type="hidden" name="car_id" value="' . $details['carro_idcarro'] . '">' .
-                    '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitConfirmReservation" value="Confirmar" id="submitConfirmReservation">' .
-                    '</form>' .
-                    '</div>';
+                '<div class="infoFlex column">' .
 
-                echo $str;
-                ?>
+                '<div class="infoFlex marginFlex ">' .
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Marca</p>' .
+                '<h4>' . $car['marca'] . '</h4>' .
+                '</div>' .
 
-                <?php
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Modelo</p>' .
+                '<h4>' . $car['modelo'] . '</h4>' .
+                '</div>' .
+                '</div>' .
 
-                ?>
+                '<div class="infoFlex marginFlex">' .
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Ano</p>' .
+                '<h4>' . $car['ano'] . '</h4>' .
+                '</div>' .
 
-            </div>
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Assentos</p>' .
+                '<h4>' . $car['assentos'] . '</h4>' .
+                '</div>' .
+                '</div>' .
+
+                '<div class="infoFlex marginFlex ">' .
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Data de Levantamento</p>' .
+                '<h4>' . $details['datainicio'] . '</h4>' .
+                '</div>' .
+
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Data de Entrega</p>' .
+                '<h4>' . $details['datafim'] . '</h4>' .
+                '</div>' .
+                '</div>' .
+
+                '<div class="infoFlex column alignCenter">' .
+                '<p>Total</p>' .
+                '<h4>' . $details['custototal'] . '€</p>' .
+                '</div>' .
+
+                '</div>' .
+
+                '<form method="POST" action="user_confirmReservation_script.php">' .
+                '<input type="hidden" name="car_id" value="' . $details['carro_idcarro'] . '">' .
+                '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitConfirmReservation" value="Confirmar" id="submitConfirmReservation">' .
+                '</form>' .
+                '</div>';
+
+            echo $str;
+            ?>
+
         </div>
     </main>

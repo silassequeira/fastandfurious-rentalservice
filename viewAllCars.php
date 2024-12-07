@@ -5,8 +5,7 @@ if (!$connection) {
     die("Erro na conexão");
 }
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+unset($_SESSION['selected_car']);
 
 $sql = "SELECT * FROM carro";
 $result = pg_query($connection, $sql);
@@ -31,22 +30,60 @@ foreach ($_SESSION['cars'] as $index => $car) {
     if (isset($_SESSION['user'])) {
         $str = '<div class="car-item ' . $car['ocultado'] . '">';
     } else {
-        $str = '<div class="car-item">';
+        $str = '<div class="car-item">' .
+        '<p class="marginFlex">' . $car['arrendado'] . '</p>' ;
     }
-    $str .= '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
-        '<h3>' . $car['marca'] . '</h3>' .
-        '<p>Modelo: ' . $car['modelo'] . '</p>' .
-        '<p>Ano: ' . $car['ano'] . '</p>' .
-        '<p>Assentos: ' . $car['assentos'] . '</p>' .
-        '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
-        '<p>' . $car['arrendado'] . '</p>' .
+    $str .=
+        '<div class="imgContainer">' .
+        '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+        '</div>' .
+
+        '<h3 class="centered-marginTop">' . $car['marca'] . ' ' . $car['modelo'] . '</h3>' .
+
+        '<div class="infoFlex column">' .
+
+        '<div class="infoFlex marginFlex ">' .
+        '<div class="infoFlex column alignCenter">' .
+        '<p>Marca</p>' .
+        '<h4>' . $car['marca'] . '</h4>' .
+        '</div>' .
+
+        '<div class="infoFlex column alignCenter">' .
+        '<p>Modelo</p>' .
+        '<h4>' . $car['modelo'] . '</h4>' .
+        '</div>' .
+        '</div>' .
+
+        '<div class="infoFlex marginFlex">' .
+        '<div class="infoFlex column alignCenter">' .
+        '<p>Ano</p>' .
+        '<h4>' . $car['ano'] . '</h4>' .
+        '</div>' .
+
+        '<div class="infoFlex column alignCenter">' .
+        '<p>Assentos</p>' .
+        '<h4>' . $car['assentos'] . '</h4>' .
+        '</div>' .
+        '</div>' .
+
+        '<div class="infoFlex column alignCenter">' .
+        '<p>Preço Diário</p>' .
+        '<h4>' . $car['valordiario'] . '€</p>' .
+        '</div>' .
+
+        '</div>' .
+
+        
+
         '<form method="POST">' .
         '<input type="hidden" name="car_id" value="' . $car['idcarro'] . '">';
 
     if (isset($_SESSION['admin'])) {
-        $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitModify" value="Modificar" id="submitModify">';
-        $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitErase" value="Eliminar" id="submitErase">';
-        $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitHide" value="' . $car['ocultado'] . '">';
+        $str .= '<div class="infoFlex centered-marginTop">' .
+            '<input type="submit" class="button redFont whiteBackground" name="submitModify" value="Modificar" id="submitModify">' .
+            '<input type="submit" class="button redFont whiteBackground" name="submitErase" value="Eliminar" id="submitErase">' .
+            '<input type="submit" class="button redFont whiteBackground" name="submitHide" value="' . $car['ocultado'] . '">' .
+            '</div>';
     } else if (isset($_SESSION['user'])) {
         $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitRent" value="Alugar" id="submitRent">';
     }
@@ -121,22 +158,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitErase']) && iss
 }
 function calculateTotalPrice($startDate, $endDate, $pricePerDay)
 {
-    try {
-        $start = new DateTime($startDate);
-        $end = new DateTime($endDate);
+    $start = new DateTime($startDate);
+    $end = new DateTime($endDate);
 
-        // Calculate the interval in days
-        $interval = $start->diff($end);
-        $days = $interval->days + 1; // +1 to include both start and end days
+    // Calculate the interval in days
+    $interval = $start->diff($end);
+    $days = $interval->days + 1; // +1 to include both start and end days
 
-        // Calculate total price
-        $totalPrice = $days * $pricePerDay;
+    // Calculate total price
+    $totalPrice = $days * $pricePerDay;
 
-        return $totalPrice;
-    } catch (Exception $e) {
-        // Handle invalid date formats
-        return "Erro: " . $e->getMessage();
-    }
+    return $totalPrice;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRent']) && isset($_POST['car_id']) && isset($_SESSION['reservation_data'])) {

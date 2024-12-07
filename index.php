@@ -50,14 +50,14 @@ require 'checkSession.php';
         ?>
         <div class="container redBackground">
             <form method="POST" action="index_scriptForm.php">
-                <h2 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h2>
+                <h3 class="centered-marginTop whiteFont">Encontre as melhores ofertas para alugar carros</h3>
 
                 <div class="infoFlex">
-                    <div class="infoFlex column">
+                    <div class="infoFlex column marginSides">
                         <label class="centered-marginTop whiteFont" for="datainicio">Data de Levantamento</label>
                         <input type="date" id="datainicio" class="input disableSelect" name="datainicio" onkeydown="return false;" required>
                     </div>
-                    <div class="infoFlex column">
+                    <div class="infoFlex column marginSides">
                         <label class="centered-marginTop whiteFont" for="datafim">Data de Entrega</label>
                         <input type="date" id="datafim" class="input disableSelect" name="datafim" onkeydown="return false;" required>
                     </div>

@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
 
         if ($resultAdmin) {
             $_SESSION['success'] = "Conta de administrador criada com sucesso!";
+            $_SESSION['admin'] = $usernameInput;
             $_SESSION['logged_in'] = true;
             header('Location: admin_visualizeAllCars.php');
             exit();
@@ -47,12 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
             exit();
         }
     } else {
-        $randomSaldo = rand(400, 1200);
+        $randomSaldo = rand(1300, 4200);
         $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, $5)";
         $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput, $randomSaldo));
 
         if ($resultUser) {
             $_SESSION['success'] = "Conta criada com sucesso!";
+            $_SESSION['user'] = $usernameInput;
             $_SESSION['logged_in'] = true;
             header('Location: index.php');
             exit();

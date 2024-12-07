@@ -63,7 +63,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitConfirmReservat
 
     $result = pg_query_params($connection, $sql, $params);
 
-    if ($result) {
+    $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
+    $selectResult = pg_query_params($connection, $selectSql, array($carId));
+
+    if (!$selectResult) {
+        die("Erro ao buscar status do carro: " . pg_last_error($connection));
+    }
+
+    $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
+    $rented = $currentStatus === 't' ? 'f' : 't'; // Toggle value (PostgreSQL 't' for true, 'f' for false)
+
+    // Update 'arrendado' to its new value
+    $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
+    $paramsRented = array($carId, $rented);
+    $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
+
+    if ($result && $resultRented) {
         $_SESSION['success'] = "Reserva adicionada com sucesso!";
         $_SESSION['reservation_data']['saldo'] = $newSaldo;
         header('Location: user_reservations.php');
