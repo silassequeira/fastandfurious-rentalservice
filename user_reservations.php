@@ -108,12 +108,32 @@ require 'checkSession.php';
                     $reservaId = $_POST['idreserva'];
                     $deleteSql = 'DELETE FROM reserva WHERE idreserva = $1';
                     $result = pg_query_params($connection, $deleteSql, [$reservaId]);
-                    if (!$result) {
-                        die("Erro ao eliminar reserva: " . pg_last_error($connection));
+
+                    $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
+                    $selectResult = pg_query_params($connection, $selectSql, array($car['idcarro']));
+
+                    if (!$selectResult) {
+                        die("Erro ao buscar status do carro: " . pg_last_error($connection));
                     }
 
-                    header("Location: user_reservations.php");
-                    exit();
+                    $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
+                    $rented = $currentStatus === 't' ? 'f' : 't'; // Toggle value (PostgreSQL 't' for true, 'f' for false)
+                
+                    // Update 'arrendado' to its new value
+                    $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
+                    $paramsRented = array($car['idcarro'], $rented);
+                    $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
+
+                    if ($result && $resultRented) {
+                        $_SESSION['success'] = "Reserva removida com sucesso!";
+                        header('Location: user_reservations.php');
+                        exit();
+                    } else {
+                        $_SESSION['error'] = "Erro ao eliminar reserva: " . pg_last_error($connection);
+                        header('Location: user_reservations.php');
+                        exit();
+                    }   
+
                 }
 
                 ?>

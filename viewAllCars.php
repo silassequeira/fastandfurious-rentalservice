@@ -7,20 +7,62 @@ if (!$connection) {
 
 unset($_SESSION['selected_car']);
 
-$sql = "SELECT * FROM carro";
-$result = pg_query($connection, $sql);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
+    $sql = "SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000";
+    $params = [];
+    $placeholders = 1; // Placeholder counter
+    
+    if (isset($_POST['min-price']) && $_POST['min-price'] !== '') {
+        $sql .= " AND valordiario > $" . $placeholders;
+        $params[] = $_POST['min-price'];
+        $placeholders++;
+    }
+    if (isset($_POST['max-price']) && $_POST['max-price'] !== '') {
+        $sql .= " AND valordiario < $" . $placeholders;
+        $params[] = $_POST['max-price'];
+        $placeholders++;
+    }
+    if (isset($_POST['car-brand']) && $_POST['car-brand'] !== '') {
+        $sql .= " AND marca = $" . $placeholders;
+        $params[] = $_POST['car-brand'];
+        $placeholders++;
+    }
+    
+    $sql .= " AND ocultado = FALSE";
+    
+    // Now execute the query
+    $result = pg_query_params($connection, $sql, $params);
 
-if (!$result) {
-    die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+    if (!$result) {
+        error_log("Erro ao executar a consulta: " . pg_last_error($connection));
+        $_SESSION['error'] = "Erro ao executar a consulta";
+        header('Location: index.php');
+        exit();
+    } else {
+        $cars = pg_fetch_all($result);
+        header('user_selectCar.php');
+        if ($cars === false) {
+            $cars = [];
+        }
+    }
+} else {
+
+    $sql = "SELECT * FROM carro";
+    $result = pg_query($connection, $sql);
+
+    if (!$result) {
+        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+    }
+
+    $cars = pg_fetch_all($result);
+
 }
-
-$cars = pg_fetch_all($result);
 
 $_SESSION['cars'] = [];
 foreach ($cars as $index => $car) {
     $_SESSION['cars'][$index] = $car;
     $_SESSION['cars'][$index]['ocultado'] = $car['ocultado'] === 't' ? 'Revelar' : 'Ocultar';
-    $_SESSION['cars'][$index]['arrendado'] = $car['arrendado'] === 't' ? 'Arrendado' : 'Por Arrendar';
+    $_SESSION['cars'][$index]['arrendado'] = $car['arrendado'] === 't' ? 'Arrendado' : 'Disponivel';
 }
 
 
@@ -28,10 +70,10 @@ foreach ($cars as $index => $car) {
 foreach ($_SESSION['cars'] as $index => $car) {
 
     if (isset($_SESSION['user'])) {
-        $str = '<div class="car-item ' . $car['ocultado'] . '">';
+        $str = '<div class="car-item ' . $car['ocultado'] . ' ' . $car['arrendado'] . '">';
     } else {
         $str = '<div class="car-item">' .
-        '<p class="marginFlex">' . $car['arrendado'] . '</p>' ;
+            '<p class="marginFlex">' . $car['arrendado'] . '</p>';
     }
     $str .=
         '<div class="imgContainer">' .
@@ -73,7 +115,7 @@ foreach ($_SESSION['cars'] as $index => $car) {
 
         '</div>' .
 
-        
+
 
         '<form method="POST">' .
         '<input type="hidden" name="car_id" value="' . $car['idcarro'] . '">';

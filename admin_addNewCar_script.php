@@ -77,6 +77,7 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '<p>No image selected</p>' .
         '</div>' .
         '<input type="file" id="foto" accept="image/png, image/jpg, image/jpeg" name="foto" required>' .
+        '<div id="error-message" style="color: red;"></div>' .
         '</div>' .
 
         '<div class="infoFlex column marginFlex">' .
@@ -100,7 +101,7 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '<input type="number" id="ano" name="ano" min="1900" max="2100" required>' .
         '</span>' .
 
-        '<span>' .
+        '<span class="reference">' .
         '<label for="assentos">Assentos</label>' .
         '<select id="assentos" name="assentos" required>' .
         '<option value="2">2</option>' .

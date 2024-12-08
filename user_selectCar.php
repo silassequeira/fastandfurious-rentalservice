@@ -51,11 +51,15 @@ require 'checkSession.php';
             <h2>Selecione o seu veículo</h2>
         </div>
 
-        <div class="layoutGrid">
-                <?php
-                require 'viewAllCars.php';
-                ?>
+        <div>
+            <?php
+            require 'user_selectCar_filter.php';
+            ?>
         </div>
+        <div class="layoutGrid">
+            <?php
+            require 'viewAllCars.php';
+            ?>
         </div>
 
     </main>

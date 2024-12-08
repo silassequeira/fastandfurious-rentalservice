@@ -45,38 +45,33 @@ require 'admin_stats_script.php';
             <h2>Estatísticas</h2>
         </div>
 
-        <div class="layoutGrid">
-            <div class="infoFlex column">
-                <div class="container">
-                    <h5>Número Total de Carros</h5>
-                    <h5 value="total-cars"><?php echo $NumeroCarros; ?></h5>
-                </div>
-                <div class="container">
-                    <h5>Carros Disponíveis</h5>
-                    <h5 value="available-cars"><?php echo $NumeroCarrosDisponiveis; ?></h5>
-                </div>
+        <div class="layoutGrid marginTop">
+            <div class="container infoFlex column alignCenter">
+                <p>Número Total de Carros</p>
+                <h5 value="total-cars"><?php echo $NumeroCarros; ?></h5>
             </div>
-            <div class="infoFlex column">
-                <div class="container">
-                    <h5>Número Total de Reservas</h5>
-                    <h5 value="rented-cars"><?php echo $NumeroReservas; ?></h5>
-                </div>
-                <div class="container">
-                    <h5>Número Médio de Reservas por Utilizador</h5>
-                    <h5 value="averageRented-cars"><?php echo $MediaReservaUtilizador; ?></h5>
-                </div>
+            <div class="container infoFlex column alignCenter">
+                <p>Carros Disponíveis</p>
+                <h5 value="available-cars"><?php echo $NumeroCarrosDisponiveis; ?></h5>
             </div>
-            <div class="infoFlex column">
-                <div class="container">
-                    <h5>Número Total de Utilizadores</h5>
-                    <h5 value="total-users"><?php echo $NumeroUtilizadores; ?></h5>
-                </div>
-                <div class="container">
-                    <h5>Utilizadores que Reservaram</h5>
-                    <h5 value="thatRent-users"><?php echo $UtilizadoresQueReservaram; ?></h5>
-                </div>
+            <div class="container infoFlex column alignCenter">
+                <p>Número Total de Reservas</p>
+                <h5 value="rented-cars"><?php echo $NumeroReservas; ?></h5>
+            </div>
+            <div class="container infoFlex column alignCenter">
+                <p>Número Médio de Reservas por Utilizador</p>
+                <h5 value="averageRented-cars"><?php echo $MediaReservaUtilizador; ?></h5>
             </div>
 
+            <div class="container infoFlex column alignCenter">
+                <p>Número Total de Utilizadores</p>
+                <h5 value="total-users"><?php echo $NumeroUtilizadores; ?></h5>
+            </div>
+            <div class="container infoFlex column alignCenter">
+                <p>Utilizadores que Reservaram</p>
+                <h5 value="thatRent-users"><?php echo $UtilizadoresQueReservaram; ?></h5>
+            </div>
+        </div>
     </main>
 </body>
 

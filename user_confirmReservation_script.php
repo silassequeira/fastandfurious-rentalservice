@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitConfirmReservat
     $result = pg_query_params($connection, $sql, $params);
 
     $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
-    $selectResult = pg_query_params($connection, $selectSql, array($carId));
+    $selectResult = pg_query_params($connection, $selectSql, array($car['idcarro']));
 
     if (!$selectResult) {
         die("Erro ao buscar status do carro: " . pg_last_error($connection));
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitConfirmReservat
 
     // Update 'arrendado' to its new value
     $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
-    $paramsRented = array($carId, $rented);
+    $paramsRented = array($car['idcarro'], $rented);
     $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
 
     if ($result && $resultRented) {
