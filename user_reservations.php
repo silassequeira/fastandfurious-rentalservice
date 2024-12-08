@@ -49,7 +49,6 @@ require 'checkSession.php';
         <div class="layoutGrid">
 
             <?php
-
             $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
             if (!$connection) {
                 die("Error connecting to the database");
@@ -60,48 +59,53 @@ require 'checkSession.php';
                 unset($_SESSION['error']);
             }
             ?>
+
             <div class="infoFlex">
                 <?php
                 global $connection;
 
-                $sql = "SELECT * FROM reserva";
-                $result = pg_query($connection, $sql);
+                $sessionCheck = checkSession($connection);
+                $username = $sessionCheck['details']['username'];
 
-                if (!$result) {
-                    die("Erro ao buscar dados do carro: " . pg_last_error($connection));
-                }
 
-                $reservas = pg_fetch_all($result);
+                $sql = "SELECT * FROM reserva WHERE cliente_username = $1";
+                $result = pg_query_params($connection, $sql, [$username]);
 
-                foreach ($reservas as $index => $reserva) {
-                    $carId = $reserva['carro_idcarro'];
-                    $sql = "SELECT * FROM carro WHERE idcarro = $carId";
-                    $result = pg_query($connection, $sql);
+                if ($result) {
+                    $reservas = pg_fetch_all($result);
 
-                    if (!$result) {
-                        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
-                    } else {
-                        $car = pg_fetch_assoc($result);
+
+
+                    foreach ($reservas as $index => $reserva) {
+                        $carId = $reserva['carro_idcarro'];
+                        $sql = "SELECT * FROM carro WHERE idcarro = $carId";
+                        $result = pg_query($connection, $sql);
+
+                        if (!$result) {
+                            die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+                        } else {
+                            $car = pg_fetch_assoc($result);
+                        }
+
+                        $str = '<div class="car-item">' .
+                            '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+                            '<h3>' . $car['marca'] . '</h3>' .
+                            '<p>Modelo: ' . $car['modelo'] . '</p>' .
+                            '<p>Ano: ' . $car['ano'] . '</p>' .
+                            '<p>Assentos: ' . $car['assentos'] . '</p>' .
+                            '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
+                            '<p>Data de Levantamento: ' . $reserva['datainicio'] . '' .
+                            '<p>Data de Entrega: ' . $reserva['datafim'] . '' .
+                            '<p>Total: ' . $reserva['custototal'] . '</p>' .
+                            '<form method="POST">' .
+                            '<input type="hidden" name="idreserva" value="' . $reserva['idreserva'] . '">' .
+                            '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitCancel" value="Cancelar Reserva" id="submitCancel">' .
+                            '</form>' .
+                            '</div>';
+
+                        echo $str;
+
                     }
-
-                    $str = '<div class="car-item">' .
-                        '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
-                        '<h3>' . $car['marca'] . '</h3>' .
-                        '<p>Modelo: ' . $car['modelo'] . '</p>' .
-                        '<p>Ano: ' . $car['ano'] . '</p>' .
-                        '<p>Assentos: ' . $car['assentos'] . '</p>' .
-                        '<p>Preço Diário: ' . $car['valordiario'] . '</p>' .
-                        '<p>Data de Levantamento: ' . $reserva['datainicio'] . '' .
-                        '<p>Data de Entrega: ' . $reserva['datafim'] . '' .
-                        '<p>Total: ' . $reserva['custototal'] . '</p>' .
-                        '<form method="POST">' .
-                        '<input type="hidden" name="idreserva" value="' . $reserva['idreserva'] . '">' .
-                        '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitCancel" value="Cancelar Reserva" id="submitCancel">' .
-                        '</form>' .
-                        '</div>';
-
-                    echo $str;
-
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitCancel']) && isset($_POST['idreserva'])) {
@@ -132,7 +136,7 @@ require 'checkSession.php';
                         $_SESSION['error'] = "Erro ao eliminar reserva: " . pg_last_error($connection);
                         header('Location: user_reservations.php');
                         exit();
-                    }   
+                    }
 
                 }
 
