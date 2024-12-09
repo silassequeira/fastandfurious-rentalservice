@@ -35,7 +35,7 @@ require 'checkSession.php';
             echo $str = '
             <nav>
                 <a class="button" href="register.php">Criar Conta</a>
-                <a class="button redBackground whiteFont" href="login.php">Login</a>
+                <a class="button redBackground whiteFont red-button" href="login.php">Login</a>
             </nav>';
         }
         ?>
@@ -43,9 +43,9 @@ require 'checkSession.php';
 
     <main>
         <?php
-        if (isset($_SESSION['error'])) {
-            echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
-            unset($_SESSION['error']);
+        if (isset($_SESSION['errorIndex'])) {
+            echo '<p class="marginFlex redFont">&#9888; ' . $_SESSION['errorIndex'] . '</p>';
+            unset($_SESSION['errorIndex']);
         }
         ?>
         <div class="container redBackground">

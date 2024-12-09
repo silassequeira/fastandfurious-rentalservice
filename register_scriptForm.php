@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
     );
 
     if (pg_num_rows($queryUser) > 0 || pg_num_rows($queryAdmin) > 0) {
-        $_SESSION['error'] = "Username ou email já existente";
+        $_SESSION['errorRegister'] = "Username ou email já existente";
         header('Location: register.php');
         exit();
     }
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
             header('Location: admin_visualizeAllCars.php');
             exit();
         } else {
-            $_SESSION['error'] = "Erro ao criar a conta de administrador: " . pg_last_error($connection);
+            $_SESSION['errorRegister'] = "Erro ao criar a conta de administrador: " . pg_last_error($connection);
             header('Location: register.php');
             exit();
         }
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
             header('Location: index.php');
             exit();
         } else {
-            $_SESSION['error'] = "Erro ao criar a conta: " . pg_last_error($connection);
+            $_SESSION['errorRegister'] = "Erro ao criar a conta: " . pg_last_error($connection);
             header('Location: register.php');
             exit();
         }

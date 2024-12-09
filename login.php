@@ -15,19 +15,6 @@ session_start();
 <body>
     <header>
         <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
-
-        <?php
-        if (isset($_SESSION['error'])) {
-            echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
-            unset($_SESSION['error']);
-        }
-
-        if (isset($_SESSION['success'])) {
-            echo '<p style="color:green;">' . $_SESSION['success'] . '</p>';
-            unset($_SESSION['success']);
-        }
-        ?>
-
     </header>
     <main class="centered-marginTop ">
         <div class="container">
@@ -35,6 +22,12 @@ session_start();
                 <h4>Login para aceder a Conta</h4>
 
                 <div class="infoFlex column marginTop gap">
+                    <?php
+                    if (isset($_SESSION['errorLogin'])) {
+                        echo '<p class="redFont">&#9888; ' . $_SESSION['errorLogin'] . '</p>';
+                        unset($_SESSION['errorLogin']);
+                    }
+                    ?>
                     <span class="reference">
                         <label for="username">Username ou E-mail</label>
                         <input type="text" id="username" name="username" required>
@@ -45,7 +38,7 @@ session_start();
                     </span>
                     <div class="infoFlex noMargin">
                         <span>
-                            <a href="register.php">Criar Conta</a>
+                            <a class="underline text-light" href="register.php">Criar Conta</a>
                         </span>
                         <span>
                             <input type="submit" class="noPadding" name="submitLogin" value="Iniciar Sessão" id="submitLogin" disabled>

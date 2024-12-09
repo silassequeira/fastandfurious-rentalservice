@@ -33,7 +33,7 @@ if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php');
             exit();
         } else {
-            $_SESSION['error'] = "Senha ou usuário incorretos" . pg_last_error($connection);
+            $_SESSION['errorLogin'] = "Senha ou usuário incorretos" . pg_last_error($connection);
             header('Location: login.php');
             exit();
         }
@@ -48,12 +48,12 @@ if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: admin_visualizeAllCars.php');
             exit();
         } else {
-            $_SESSION['error'] = "Senha ou administrador incorretos" . pg_last_error($connection);
+            $_SESSION['errorLogin'] = "Senha ou administrador incorretos" . pg_last_error($connection);
             header('Location: login.php');
             exit();
         }
     } else {
-        $_SESSION['error'] = "Usuário ou administrador não encontrado" . pg_last_error($connection);
+        $_SESSION['errorLogin'] = "Usuário ou administrador não encontrado" . pg_last_error($connection);
         header('Location: login.php');
         exit();
     }

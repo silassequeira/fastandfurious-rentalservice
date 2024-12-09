@@ -8,7 +8,7 @@ if (!$connection) {
 unset($_SESSION['selected_car']);
 $details = $_SESSION['reservation_data'] ?? null;
 
-// Filter cars based on user input
+# Filter cars based on user input
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
 
     $sql = "SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000";
@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
             $cars = [];
         }
     }
+
     # Displays all cars
 } else {
 
@@ -61,6 +62,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
 
 }
 
+# Store car records in the session with additional display fields and reservation counts (admin)
+foreach ($cars as $index => $car) {
+
+    $_SESSION['cars'][$index] = $car;
+    $_SESSION['cars'][$index]['ocultado'] = $car['ocultado'] === 't' ? 'Revelar' : 'Ocultar';
+    $_SESSION['cars'][$index]['arrendado'] = $car['arrendado'] === 't' ? 'Arrendado' : 'Disponível';
+
+    $_SESSION['cars'][$index]['reservation_count'] = 0;
+
+    $sqlCount = "SELECT count(*) FROM reserva WHERE carro_idcarro = $1";
+    $resultCount = pg_query_params($connection, $sqlCount, [$car['idcarro']]);
+
+    if (!$resultCount) {
+        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+    }
+
+    $countResult = pg_fetch_result($resultCount, 0, 0);
+    $_SESSION['cars'][$index]['reservation_count'] = $countResult;
+}
+
+# Storing the reservation dates for each car in the session (admin)
+$_SESSION['dates'] = [];
+foreach ($cars as $car) {
+    $sqlDates = "SELECT cliente_username, datainicio, datafim FROM reserva WHERE carro_idcarro = $1";
+    $resultDates = pg_query_params($connection, $sqlDates, [$car['idcarro']]);
+
+    if (!$resultDates) {
+        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+    }
+
+    $dates = pg_fetch_all($resultDates);
+
+    $_SESSION['dates'][$car['idcarro']] = $dates ? $dates : [];
+}
+
+# Function to check if two date intervals overlap (user)
 function intervalosCoincidem($inicio1, $fim1, $inicio2, $fim2)
 {
     // Converte as datas para timestamps
@@ -73,72 +110,30 @@ function intervalosCoincidem($inicio1, $fim1, $inicio2, $fim2)
     return ($inicio1 <= $fim2) && ($inicio2 <= $fim1);
 }
 
-# Storing the processed car records in the session and adding additional fields for display
-$_SESSION['cars'] = [];
-foreach ($cars as $index => $car) {
-    // Ensure every car has a default reservation_count of 0
-    $_SESSION['cars'][$index] = $car;
-    $_SESSION['cars'][$index]['ocultado'] = $car['ocultado'] === 't' ? 'Revelar' : 'Ocultar';
-    $_SESSION['cars'][$index]['arrendado'] = $car['arrendado'] === 't' ? 'Arrendado' : 'Disponível';
-
-    // Initialize reservation_count to 0 by default
-    $_SESSION['cars'][$index]['reservation_count'] = 0;
-
-    // Query to count reservations for the car
-    $sqlCount = "SELECT count(*) FROM reserva WHERE carro_idcarro = $1";
-    $resultCount = pg_query_params($connection, $sqlCount, [$car['idcarro']]);
-
-    if (!$resultCount) {
-        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
-    }
-
-    // Set the reservation count for the car
-    $countResult = pg_fetch_result($resultCount, 0, 0);
-    $_SESSION['cars'][$index]['reservation_count'] = $countResult;
-}
-
-
-$_SESSION['dates'] = []; // Initialize an empty session variable for dates
-
-foreach ($cars as $car) {
-    $sqlDates = "SELECT datainicio, datafim FROM reserva WHERE carro_idcarro = $1";
-    $resultDates = pg_query_params($connection, $sqlDates, [$car['idcarro']]);
-
-    if (!$resultDates) {
-        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
-    }
-
-    $dates = pg_fetch_all($resultDates);
-
-    // Assign dates to the session variable, keyed by the car's ID
-    $_SESSION['dates'][$car['idcarro']] = $dates ? $dates : [];
-}
-
-
+#  Handles car availability in a time period (user)
 if (isset($_SESSION['user'])) {
 
-    foreach ($_SESSION['cars'] as $index => $car) {    
-        $carId = $car['idcarro']; // Car ID to fetch corresponding dates        //check all the reserves from a car
+    foreach ($_SESSION['cars'] as $index => $car) {
+        $carId = $car['idcarro'];
         $indiponivelnadata = false;
 
         if ($car['reservation_count'] > 0) {
-            $sqrInDates = "SELECT datainicio FROM reserva WHERE carro_idcarro = $1";
-            $sqrFinDates = "SELECT datafim FROM reserva WHERE carro_idcarro = $1";
+            $sqlInicio = "SELECT datainicio FROM reserva WHERE carro_idcarro = $1";
+            $sqlFim = "SELECT datafim FROM reserva WHERE carro_idcarro = $1";
 
-            $resultIn = pg_query_params($connection, $sqrInDates, [$car['idcarro']]);
-            $resultFin = pg_query_params($connection, $sqrFinDates, [$car['idcarro']]);
-            if (!$resultIn or !$resultFin) {
+            $resultInicio = pg_query_params($connection, $sqlInicio, [$car['idcarro']]);
+            $resultFim = pg_query_params($connection, $sqlFim, [$car['idcarro']]);
+            if (!$resultInicio or !$resultFim) {
                 die("Erro ao buscar dados das reservas: " . pg_last_error($connection));
             }
-            $datasIn = pg_fetch_all($resultIn);
-            $datasFin = pg_fetch_all($resultFin);
+            $datasI = pg_fetch_all($resultInicio);
+            $datasF = pg_fetch_all($resultFim);
 
 
-            if ($datasIn && $datasFin) {
-                // Iterando pelas datas:
-                for ($i = 0; $i < count($datasIn); $i++) {
-                    $dataInicio = $datasIn[$i]['datainicio'];
-                    $dataFim = $datasFin[$i]['datafim'];
+            if ($datasI && $datasF) {
+                for ($i = 0; $i < count($datasI); $i++) {
+                    $dataInicio = $datasI[$i]['datainicio'];
+                    $dataFim = $datasF[$i]['datafim'];
                     $dataReservaIn = $_SESSION['reservation_data']['datainicio'];
                     $dataReservaFim = $_SESSION['reservation_data']['datafim'];
                     if (intervalosCoincidem($dataInicio, $dataFim, $dataReservaIn, $dataReservaFim)) {
@@ -270,23 +265,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRent']) && isse
 
 # Displays all cars and applies different tags for the admin and the user
 foreach ($_SESSION['cars'] as $index => $car) {
-    $carId = $car['idcarro']; // Car ID to fetch corresponding dates
-    $dates = $_SESSION['dates'][$carId] ?? []; // Fetch dates for this car
+
+    $carId = $car['idcarro'];
+    $dates = $_SESSION['dates'][$carId] ?? [];
 
     if (isset($_SESSION['user'])) {
-        $str = '<div class="car-item ' . $car['ocultado'] . ' ' . $car['disponivel'] . ' ' . $car['arrendado'] .' ">';
+        $str = '<div class="car-item ' . $car['ocultado'] . ' ' . $car['disponivel'] . ' ' . $car['arrendado'] . ' ">';
     } else {
         $str = '<div class="car-item">' .
-            '<p class="marginFlex">' . $car['arrendado'] . '</p>' .
-            '<p class="marginFlex">' . $car['reservation_count'] ?? 0 . '</p>';
+            '<div class="infoFlex marginFlex">' .
+            '<p class="borderAround">' . $car['arrendado'] . '</p>';
+
+        if ($car['reservation_count'] == 0) {
+            $str .= '<p class="marginFlex Revelar"></p>';
+        } else {
+            $str .= '<p class="text-light">n&#176; de reservas:<b> ' . $car['reservation_count'] . '</b></p>';
+        }
+        $str .= '</div>' ;
+
+        $str .= '<div class="layoutGridAutoFit marginFlex noGap borderTop">' ;
+
         if (!empty($dates)) {
             foreach ($dates as $date) {
-                $str .= '<p class="marginFlex">' . $date['datainicio'] . '</p>';
-                $str .= '<p class="marginFlex">' . $date['datafim'] . '</p>';
+                $str .= '<span>' .
+                    '<p class="green">' . $date['cliente_username'] . '</p>' .
+                    '<p class="">Levantamento: ' . $date['datainicio'] . '</p>' .
+                    '<p class="">Entrega ' . $date['datafim'] . '</p>' .
+                    '</span>';
             }
         } else {
-            $str .= '<p class="Revelar"></p>';
+            $str .= '<span>' .
+                '<p class="Revelar"></p>' .
+                '</span>';
+
         }
+        $str .= '</div>' ;
     }
 
     $str .=
@@ -334,9 +347,9 @@ foreach ($_SESSION['cars'] as $index => $car) {
 
     if (isset($_SESSION['admin'])) {
         $str .= '<div class="infoFlex centered-marginTop">' .
-            '<input type="submit" class="button redFont whiteBackground" name="submitModify" value="Modificar" id="submitModify">' .
-            '<input type="submit" class="button redFont whiteBackground" name="submitErase" value="Eliminar" id="submitErase">' .
-            '<input type="submit" class="button redFont whiteBackground" name="submitHide" value="' . $car['ocultado'] . '">' .
+            '<input type="submit" class="button green whiteBackground" name="submitModify" value="Modificar" id="submitModify">' .
+            '<input type="submit" class="button green whiteBackground" name="submitErase" value="Eliminar" id="submitErase">' .
+            '<input type="submit" class="button green whiteBackground" name="submitHide" value="' . $car['ocultado'] . '">' .
             '</div>';
     } else if (isset($_SESSION['user'])) {
         $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitRent" value="Alugar" id="submitRent">';
