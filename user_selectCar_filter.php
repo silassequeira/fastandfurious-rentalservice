@@ -1,6 +1,8 @@
 <?php
 $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
 
+
+# Fetches all brands from the car table that aren't hidden or rented
 $brandQuery = "SELECT DISTINCT marca FROM carro WHERE ocultado = false AND arrendado = false";
 $brandResult = pg_query($connection, $brandQuery);
 
@@ -10,8 +12,8 @@ if (!$brandResult) {
 
 $brands = pg_fetch_all_columns($brandResult, 0);
 
-
-    $str = '<form class="inlineFlex marginTop gap" method="POST">
+$str = '<form class="marginTop gap" method="POST">
+    <div class="layoutGridAutoFit">
         <span class="reference">
             <label for="min-price">Preço Mínimo</label>
             <input type="number" id="min-price" name="min-price" placeholder="Preço Mínimo">
@@ -24,11 +26,12 @@ $brands = pg_fetch_all_columns($brandResult, 0);
             <label for="car-brand">Marca</label>
             <select name="car-brand">
                 <option value="">Todas as Marcas</option>';
-    foreach ($brands as $brand) {
-        $str .= '<option value="' . $brand . '">' . $brand . '</option>';
-    }
 
-    $str .= '    </select>
+foreach ($brands as $brand) {
+    $str .= '<option value="' . $brand . '">' . $brand . '</option>';
+}
+
+$str .= '    </select>
         </span>
         <span class="reference">
             <label for="assentos">Assentos</label>
@@ -44,9 +47,10 @@ $brands = pg_fetch_all_columns($brandResult, 0);
             <input type="submit" class="redBackground whiteFont noPadding" name="submitFilter" value="Filtrar">
         </span>
         </div>
+        </div>
     </form>';
 
 
 
-    echo $str;
+echo $str;
 

@@ -3,6 +3,7 @@
 $car = $_SESSION['selected_car'] ?? null;
 $imagePath = $car ? '/' . $car['foto'] : '';
 
+# Code dinamically adds HTML code related to the selected car
 if (isset($_SESSION['admin']) && isset($car)) {
     $str = '<form method="POST" action="admin_addNewCar_scriptForm.php" enctype="multipart/form-data">' .
         '<div class="layoutGrid">' .
@@ -67,6 +68,8 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '</form>';
 
     echo $str;
+
+    # Adds HTML code to add a new car
 } else {
 
     $str = '<form method="POST" action="admin_addNewCar_scriptForm.php" enctype="multipart/form-data">' .

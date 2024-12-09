@@ -9,7 +9,7 @@ $_SESSION['admin'] = null;
 session_unset();     // remove all session variables
 session_destroy();   // destroy the session
 
-// Remove o cookie de sessão (opcional, para garantir que o cliente não guarda informações antigas)
+// Remove os cookie de sessão 
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(

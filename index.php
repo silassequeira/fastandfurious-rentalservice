@@ -24,8 +24,8 @@ require 'checkSession.php';
         global $sessionCheck;
         if (isset($_SESSION['user'])) {
             $userDetails = $sessionCheck['details'];
-            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
-            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
+            echo '<p>Saldo: ' . $userDetails['saldo'] . ' €' . '</p>';
+            echo '<p>' . $userDetails['username'] . '</p>';
             echo '<a href="user_reservations.php">Reservas</a>';
             echo '<a href="logout.php">Terminar Sessão</a>';
         } elseif (isset($_SESSION['admin'])) {

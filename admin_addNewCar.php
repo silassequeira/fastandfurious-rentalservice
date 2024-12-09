@@ -8,7 +8,7 @@ require 'checkSession.php';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrador</title>
+    <title>Administrador Adicionar Carro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@ require 'checkSession.php';
 <body>
 
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
 
         <?php
         global $sessionCheck;
@@ -49,7 +49,7 @@ require 'checkSession.php';
         ?>
 
         <div class="infoFlex">
-            <a href="#" class="back"> &lt; Voltar</a>
+            <a href="admin_visualizeAllCars.php" class="back"> &lt; Voltar</a>
             <h2>Adicionar Carro</h2>
         </div>
 

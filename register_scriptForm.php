@@ -4,9 +4,9 @@ session_start();
 $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
 if (!$connection) {
     die("Database connection failed: " . pg_last_error());
-    exit();
 }
 
+# Checks if the register form, and defines based on the ".admin" that it's an admin account else it's a user account
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
     $usernameInput = $_POST['username'];
     $emailInput = $_POST['email'];

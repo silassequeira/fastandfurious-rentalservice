@@ -6,6 +6,7 @@ if (!$connection) {
     die("Database connection failed: " . pg_last_error());
 }
 
+# Checks if the login form was submitted and defines the $_SESSION variable accordingly
 if (isset($_POST['submitLogin']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $usernameInput = $_POST['username']; 
     $passwordInput = $_POST['password'];

@@ -9,6 +9,8 @@ if (!$connection) {
 
 $sessionCheck = checkSession($connection);
 
+
+# Checks if form related to the date of the rental was submitted 
 if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
     $datainicioInput = $_POST['datainicio'];
     $datafimInput = $_POST['datafim'];
@@ -23,9 +25,9 @@ if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isse
         'id' => $idReserva,
         'datainicio' => $datainicioInput,
         'datafim' => $datafimInput,
-        'saldo'=> $saldo,
+        'saldo' => $saldo,
         'cliente_username' => $username,
-        'cliente_email'=> $email
+        'cliente_email' => $email
     ];
 
     if (isset($_SESSION['reservation_data'])) {
@@ -38,10 +40,13 @@ if (isset($_POST['submitDate']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isse
         exit();
     }
 
+    # Checks if its an admin, if so, it will logout
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['admin'])) {
     $_SESSION['error'] = "A conta está registada como administrador " . pg_last_error($connection);
     header('Location: logout.php');
     exit();
+
+    # If no one has logged in yet a error message will be displayed
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['user']) && !isset($_SESSION['admin'])) {
     $_SESSION['error'] = "Por favor, faça login para reservar um carro";
     header('Location: index.php');

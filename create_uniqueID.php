@@ -5,6 +5,7 @@ if (!$connection) {
     die("Error connecting to the database");
 }
 
+# Function to generate a unique ID for a column in a table if available : Outputs (1,2,3,4 etc.)
 function generateUniqueId($connection, $table, $idColumn) {
     $id = 1; 
     $valid = false;

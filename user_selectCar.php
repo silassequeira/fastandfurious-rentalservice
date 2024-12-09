@@ -26,11 +26,8 @@ require 'checkSession.php';
             $userDetails = $sessionCheck['details'];
             $reservationDetails = $_SESSION['reservation_data'];
             echo '<a href="user_reservations.php">Reservas</a>';
-            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
-            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
-            echo '<p>' . htmlspecialchars($reservationDetails['id']) . '</p>';
-            echo '<p>' . htmlspecialchars($reservationDetails['datainicio']) . '</p>';
-            echo '<p>' . htmlspecialchars($reservationDetails['datafim']) . '</p>';
+            echo '<p>Saldo: ' . $userDetails['saldo'] . ' €' . '</p>';
+            echo '<p>' . $userDetails['username']. '</p>';
             echo '<a href="logout.php">Terminar Sessão</a>';
         } elseif (isset($_SESSION['admin'])) {
             $_SESSION['error'] = "Só consegue aceder a esta página com as credenciais de cliente" . pg_last_error($connection);
@@ -61,7 +58,6 @@ require 'checkSession.php';
             require 'viewAllCars.php';
             ?>
         </div>
-
     </main>
 </body>
 

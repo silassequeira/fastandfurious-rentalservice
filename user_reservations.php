@@ -43,7 +43,7 @@ require 'checkSession.php';
     <main>
         <div class="infoFlex">
             <a href="index.php" class="back"> &lt; Voltar</a>
-            <h2>Reservas</h2>
+            <h2 class="marginSides">Reservas</h2>
         </div>
 
         <div class="layoutGrid">
@@ -67,14 +67,58 @@ require 'checkSession.php';
                 $sessionCheck = checkSession($connection);
                 $username = $sessionCheck['details']['username'];
 
+                # Checks if the user submitted to cancel a reservation and updates the car status to available
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitCancel']) && isset($_POST['idreserva'])) {
+                    $reservaId = $_POST['idreserva'];
+                    $deleteSql = 'DELETE FROM reserva WHERE idreserva = $1';
+                    $result = pg_query_params($connection, $deleteSql, [$reservaId]);
 
+                    $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
+                    $selectResult = pg_query_params($connection, $selectSql, array($car['idcarro']));
+
+                    if (!$selectResult) {
+                        die("Erro ao buscar status do carro: " . pg_last_error($connection));
+                    }
+
+                    $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
+
+                    $sql = "SELECT COUNT(*) FROM reserva WHERE carro_idcarro = $1";
+                    $result = pg_query_params($connection, $sql, [$carId]);
+
+                    if (!$result) {
+                        die("Erro ao buscar reservas: " . pg_last_error($connection));
+                    }
+
+                    $count = pg_fetch_result($result, 0, 0);
+
+                    if ($currentStatus['status'] === 't' && $count > 1) {
+                        $rented = $currentStatus === 't';
+                    } else {
+                        $rented = $currentStatus === 't' ? 'f' : 't';
+                    }
+                    
+                    $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
+                    $paramsRented = array($car['idcarro'], $rented);
+                    $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
+
+                    if ($result && $resultRented) {
+                        $_SESSION['success'] = "Reserva removida com sucesso!";
+                        header('Location: user_reservations.php');
+                        exit();
+                    } else {
+                        $_SESSION['error'] = "Erro ao eliminar reserva: " . pg_last_error($connection);
+                        header('Location: user_reservations.php');
+                        exit();
+                    }
+
+                }
+
+                # Fetches all reservations from the user and displays them
                 $sql = "SELECT * FROM reserva WHERE cliente_username = $1";
                 $result = pg_query_params($connection, $sql, [$username]);
 
                 if ($result) {
                     $reservas = pg_fetch_all($result);
-
-
 
                     foreach ($reservas as $index => $reserva) {
                         $carId = $reserva['carro_idcarro'];
@@ -106,38 +150,6 @@ require 'checkSession.php';
                         echo $str;
 
                     }
-                }
-
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitCancel']) && isset($_POST['idreserva'])) {
-                    $reservaId = $_POST['idreserva'];
-                    $deleteSql = 'DELETE FROM reserva WHERE idreserva = $1';
-                    $result = pg_query_params($connection, $deleteSql, [$reservaId]);
-
-                    $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
-                    $selectResult = pg_query_params($connection, $selectSql, array($car['idcarro']));
-
-                    if (!$selectResult) {
-                        die("Erro ao buscar status do carro: " . pg_last_error($connection));
-                    }
-
-                    $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
-                    $rented = $currentStatus === 't' ? 'f' : 't'; // Toggle value (PostgreSQL 't' for true, 'f' for false)
-                
-                    // Update 'arrendado' to its new value
-                    $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
-                    $paramsRented = array($car['idcarro'], $rented);
-                    $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
-
-                    if ($result && $resultRented) {
-                        $_SESSION['success'] = "Reserva removida com sucesso!";
-                        header('Location: user_reservations.php');
-                        exit();
-                    } else {
-                        $_SESSION['error'] = "Erro ao eliminar reserva: " . pg_last_error($connection);
-                        header('Location: user_reservations.php');
-                        exit();
-                    }
-
                 }
 
                 ?>

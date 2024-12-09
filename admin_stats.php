@@ -9,7 +9,7 @@ require 'admin_stats_script.php';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrador</title>
+    <title>Administrador Estatísticas</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@ require 'admin_stats_script.php';
     <main>
 
         <div class="infoFlex">
-            <a href="#" class="back"> &lt; Voltar</a>
+            <a href="admin_visualizeAllCars.php" class="back"> &lt; Voltar</a>
             <h2>Estatísticas</h2>
         </div>
 

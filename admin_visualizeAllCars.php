@@ -18,7 +18,7 @@ require 'checkSession.php';
 
 <body>
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
 
         <?php
         global $sessionCheck;
@@ -38,18 +38,10 @@ require 'checkSession.php';
     </header>
 
     <main>
-
-        <div class="infoFlex">
-            <a href="#" class="back"> &gt; Adicionar Carro </a>
-        </div>
-
-
-        <div class="infoFlex column">
-            <div class="carContainer layoutGrid">
-                <?php
-                require 'viewAllCars.php';
-                ?>
-            </div>
+        <div class="layoutGrid">
+            <?php
+            require 'viewAllCars.php';
+            ?>
         </div>
     </main>
 </body>

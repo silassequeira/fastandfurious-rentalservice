@@ -6,6 +6,7 @@ if (!$connection) {
     die("Error connecting to the database");
 }
 
+# Validate user/admin sessions and returns the details like "username" "name" etc. related to each one
 function checkSession($connection)
 {
     if (isset($_SESSION['user']) && isset($_SESSION['logged_in'])) { 

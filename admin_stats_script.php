@@ -3,8 +3,8 @@ $connection = pg_connect("dbname=postgres user=postgres password=postgres host=l
 if (!$connection) {
     die("Erro na conexão");
 }
-//pesquisas a base de dados------------
-//numero de carros
+
+//Pesquisa a base de dados por numero de carros
 $sqlNc = "SELECT count(*) FROM carro";
 $result = pg_query($connection, $sqlNc);
 
@@ -12,7 +12,7 @@ if (!$result) {
     die("Error executing query");
 }
 
-// numero de carros disponiveis
+// Numero de carros disponiveis
 $sqlNcd = "SELECT count(*) FROM carro WHERE arrendado = true";
 $result1 = pg_query($connection, $sqlNcd);
 
@@ -20,7 +20,7 @@ if (!$result1) {
     die("Error executing query");
 }
 
-// numero de reservas
+// Numero de reservas
 $sqlNcr = "SELECT count(*) FROM reserva";
 $result2 = pg_query($connection, $sqlNcr);
 
@@ -28,7 +28,7 @@ if (!$result2) {
     die("Error executing query");
 }
 
-//numero de utilizadores
+// Numero de utilizadores
 $sqlNcu = "SELECT count(*) FROM cliente";
 $result3 = pg_query($connection, $sqlNcu);
 
@@ -36,7 +36,7 @@ if (!$result3) {
     die("Error executing query");
 }
 
-//numero de utilizadores que já fizeram reservas
+// Numero de utilizadores que já fizeram reservas
 $sqlNcur = "SELECT COUNT(DISTINCT cliente_username) FROM reserva";
 $result4 = pg_query($connection, $sqlNcur);
 
@@ -54,5 +54,4 @@ $MediaReservaUtilizador = $NumeroReservas / $NumeroUtilizadores;
 $UtilizadoresQueReservaram = pg_fetch_result($result4, 0);
 
 
-// Fecha a conexão com o banco de dados
 pg_close($connection);

@@ -22,18 +22,20 @@ $adminDetails = $sessionCheck['details'];
 $username = $adminDetails['username'];
 $email = $adminDetails['email'];
 
+# Code to add a new car
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
 
     $carId = generateUniqueId($connection, 'carro', 'idcarro');
 
     $file_name = $_FILES['foto']['name'];
-    $file_temporaryPath = $_FILES['foto']['tmp_name'];
+    $file_temporaryPath = $_FILES['foto']['tmp_name']; # Contains the temporary path where the file is stored on the server
 
-    $target_dir = "uploads/" . $carId . "/";
+    $target_dir = "uploads/" . $carId . "/"; 
 
     if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0777, true);
+        mkdir($target_dir, 0777, recursive: true); #code ensures that the uploads directory and the specific subdirectory for the car (based on carId) are created
     }
+    
     $file_name = basename($_FILES['foto']['name']);
     $file_destination = $target_dir . $file_name;
 
@@ -66,6 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         header('Location: admin_addNewCar.php');
         exit();
     }
+
+    # Code to Update the selected car
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitUpdateCar']) && isset($carSelected)) {
 
     $selectedCar = $_SESSION['selected_car'] ?? null;
