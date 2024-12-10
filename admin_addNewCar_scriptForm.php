@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         error_log("Destination: " . $file_destination);
         error_log("Full error: " . print_r(error_get_last(), true));
 
-        $_SESSION['error'] = "Erro ao salvar a imagem.";
+        $_SESSION['errorNewCar'] = "Erro ao salvar a imagem.";
         header('Location: admin_addNewCar.php');
         exit();
     }
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         exit();
     } else {
         error_log("Error inserting data: " . pg_last_error($connection));
-        $_SESSION['error'] = "Erro ao adicionar o carro: " . pg_last_error($connection);
+        $_SESSION['errorNewCar'] = "Erro ao adicionar o carro: " . pg_last_error($connection);
         header('Location: admin_addNewCar.php');
         exit();
     }
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
     $selectedCar = $_SESSION['selected_car'] ?? null;
     $carId = $selectedCar['idcarro'];
 
-    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+    if (isset($_FILES['foto']) && $_FILES['foto']['errorNewCar'] === UPLOAD_ERR_OK) {
         $file_name = $_FILES['foto']['name'];
         $file_temporaryPath = $_FILES['foto']['tmp_name'];
 
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
             error_log("Destination: " . $file_destination);
             error_log("Full error: " . print_r(error_get_last(), true));
 
-            $_SESSION['error'] = "Erro ao salvar a imagem.";
+            $_SESSION['errorNewCar'] = "Erro ao salvar a imagem.";
             header('Location: admin_addNewCar.php');
             exit();
         }
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitNewCar'])) {
         exit();
     } else {
         error_log("Error updating data: " . pg_last_error($connection));
-        $_SESSION['error'] = "Erro ao atualizar o carro: " . pg_last_error($connection);
+        $_SESSION['errorNewCar'] = "Erro ao atualizar o carro: " . pg_last_error($connection);
         header('Location: admin_addNewCar.php');
         exit();
     }

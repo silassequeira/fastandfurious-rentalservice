@@ -41,13 +41,6 @@ require 'checkSession.php';
 
     <main>
 
-        <?php
-        if (isset($_SESSION['error'])) {
-            echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
-            unset($_SESSION['error']);
-        }
-        ?>
-
         <div class="infoFlex">
             <a href="admin_visualizeAllCars.php" class="back"> &lt; Voltar</a>
             <h2>Adicionar Carro</h2>

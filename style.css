@@ -240,6 +240,10 @@ main {
     gap: 2.5rem;
 }
 
+.maxWidth {
+    width: 100%;
+}
+
 .noGap {
     gap: 0;
 }
@@ -497,11 +501,6 @@ input::file-selector-button {
 
 .Disponivel {
     display: grid;
-}
-
-.Arrendado {
-    filter: grayscale(80%);
-    background-color: var(--text-light);
 }
 
 .Visivel {

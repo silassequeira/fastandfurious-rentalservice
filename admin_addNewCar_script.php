@@ -18,9 +18,13 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '</div>' .
         '</div>' .
 
-        '<div class="infoFlex column marginFlex">' .
-        '<div id="error-message" style="color: red;"></div>' .
+        '<div class="infoFlex column marginFlex">';
+    if (isset($_SESSION['errorNewCar'])) {
+        $str .= '<p class="marginFlex redFont">&#9888; ' . $_SESSION['errorNewCar'] . '</p>';
+        unset($_SESSION['errorNewCar']);
+    }
 
+    $str .=
         '<div class="infoFlex noMargin normalGap">' .
         '<span class="reference">' .
         '<label for="marca">Marca</label>' .
@@ -40,7 +44,7 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '<input type="number" id="ano" name="ano" min="1900" max="2100" value="' . $car['ano'] . '" required>' .
         '</span>' .
 
-        '<span>' .
+        '<span class="reference">' .
         '<label for="assentos">Números de Lugares</label>' .
         '<select id="assentos" name="assentos" required>' .
         '<option value="2" ' . ($car['assentos'] == 2 ? 'selected' : '') . '>2</option>' .
@@ -59,7 +63,7 @@ if (isset($_SESSION['admin']) && isset($car)) {
 
         '<div class="buttonContainer">' .
         '<span>' .
-        '<input type="submit" name="submitUpdateCar" value="Atualizar">' .
+        '<input type="submit" class="noPadding" name="submitUpdateCar" value="Atualizar">' .
         '</div>' .
         '</span>' .
         '</div>' .
@@ -83,8 +87,13 @@ if (isset($_SESSION['admin']) && isset($car)) {
         '<div id="error-message" style="color: red;"></div>' .
         '</div>' .
 
-        '<div class="infoFlex column marginFlex">' .
+        '<div class="infoFlex column marginFlex">';
+    if (isset($_SESSION['errorNewCar'])) {
+        $str .= '<p class="marginFlex redFont">&#9888; ' . $_SESSION['errorNewCar'] . '</p>';
+        unset($_SESSION['errorNewCar']);
+    }
 
+    $str .=
         '<div class="infoFlex noMargin normalGap">' .
         '<span class="reference">' .
         '<label for="marca">Marca</label>' .

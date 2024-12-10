@@ -13,7 +13,7 @@ if (!$brandResult) {
 $brands = pg_fetch_all_columns($brandResult, 0);
 
 $str = '<form class="marginTop gap" method="POST">
-    <div class="layoutGridAutoFit">
+    <div class="layoutGridAutoFit maxWidth">
         <span class="reference">
             <label for="min-price">Preço Mínimo</label>
             <input type="number" id="min-price" name="min-price" placeholder="Preço Mínimo">
