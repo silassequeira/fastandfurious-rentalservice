@@ -18,7 +18,7 @@ require 'checkSession.php';
 
 <body>
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
 
         <?php
         global $sessionCheck;
@@ -41,7 +41,7 @@ require 'checkSession.php';
 
     <main>
         <div class="infoFlex">
-            <a href="index.php" class="back"> &lt; Voltar</a>
+            <a href="user_selectCar.php" class="back"> &lt; Voltar</a>
             <h2>Confirme a sua Reserva</h2>
         </div>
 

@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitConfirmReservat
 
     $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
 
-    if ($currentStatus === 't' && !$car['indiponivelnadata'] ) {
+    if ($currentStatus === 't' && $_SESSION['countReservations'] >= 1) {
         $rented = $currentStatus === 't';
     } else {
         $rented = $currentStatus === 't' ? 'f' : 't'; // Toggle value (PostgreSQL 't' for true, 'f' for false)

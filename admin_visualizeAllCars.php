@@ -38,6 +38,30 @@ require 'checkSession.php';
     </header>
 
     <main>
+        <form action="admin_visualizeAllCars.php" method="post">
+            <input type="submit" name="deleteUsers" value="Delete Users">
+        </form>
+
+        <?php
+        $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+
+
+        if (isset($_POST['deleteUsers'])) {
+            // SQL command to delete all rows in the "cliente" table
+            $sql = "DELETE FROM cliente";
+
+            $result = pg_query($connection, $sql);
+
+            if (!$result) {
+                die("Error deleting rows: " . pg_last_error($connection));
+            } else {
+                echo "All rows in the 'cliente' table have been deleted successfully.";
+            }
+
+        }
+        pg_close($connection);
+
+        ?>
         <div class="layoutGrid">
             <?php
             require 'viewAllCars.php';

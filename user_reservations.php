@@ -67,14 +67,31 @@ require 'checkSession.php';
                 $sessionCheck = checkSession($connection);
                 $username = $sessionCheck['details']['username'];
 
-                # Checks if the user submitted to cancel a reservation and updates the car status to available
+                // Checks if the user submitted to cancel a reservation and updates the car status to available
                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitCancel']) && isset($_POST['idreserva'])) {
                     $reservaId = $_POST['idreserva'];
+
+                    // Fetch the car ID associated with the reservation
+                    $carIdSql = "SELECT carro_idcarro FROM reserva WHERE idreserva = $1";
+                    $carIdResult = pg_query_params($connection, $carIdSql, [$reservaId]);
+
+                    if (!$carIdResult) {
+                        die("Erro ao buscar carro_idcarro: " . pg_last_error($connection));
+                    }
+
+                    $carId = pg_fetch_result($carIdResult, 0, 0);
+
+                    // Delete the reservation
                     $deleteSql = 'DELETE FROM reserva WHERE idreserva = $1';
                     $result = pg_query_params($connection, $deleteSql, [$reservaId]);
 
+                    if (!$result) {
+                        die("Erro ao eliminar reserva: " . pg_last_error($connection));
+                    }
+
+                    // Fetch the current rental status of the car
                     $selectSql = "SELECT arrendado FROM carro WHERE idcarro = $1";
-                    $selectResult = pg_query_params($connection, $selectSql, array($car['idcarro']));
+                    $selectResult = pg_query_params($connection, $selectSql, [$carId]);
 
                     if (!$selectResult) {
                         die("Erro ao buscar status do carro: " . pg_last_error($connection));
@@ -82,35 +99,27 @@ require 'checkSession.php';
 
                     $currentStatus = pg_fetch_result($selectResult, 0, 'arrendado');
 
-                    $sql = "SELECT COUNT(*) FROM reserva WHERE carro_idcarro = $1";
-                    $result = pg_query_params($connection, $sql, [$carId]);
-
-                    if (!$result) {
-                        die("Erro ao buscar reservas: " . pg_last_error($connection));
-                    }
-
-                    $count = pg_fetch_result($result, 0, 0);
-
-                    if ($currentStatus['status'] === 't' && $count > 1) {
-                        $rented = $currentStatus === 't';
+                    // Determine the new rental status
+                    if ($currentStatus === 't' && $_SESSION['countReservations'] > 1) {
+                        $rented = 't';
                     } else {
-                        $rented = $currentStatus === 't' ? 'f' : 't';
+                        $rented = 'f';
                     }
-                    
+
+                    // Update the rental status of the car
                     $updateSql = "UPDATE carro SET arrendado = $2 WHERE idcarro = $1";
-                    $paramsRented = array($car['idcarro'], $rented);
+                    $paramsRented = array($carId, $rented);
                     $resultRented = pg_query_params($connection, $updateSql, $paramsRented);
 
-                    if ($result && $resultRented) {
+                    if ($resultRented) {
                         $_SESSION['success'] = "Reserva removida com sucesso!";
                         header('Location: user_reservations.php');
                         exit();
                     } else {
-                        $_SESSION['error'] = "Erro ao eliminar reserva: " . pg_last_error($connection);
+                        $_SESSION['error'] = "Erro ao atualizar status do carro: " . pg_last_error($connection);
                         header('Location: user_reservations.php');
                         exit();
                     }
-
                 }
 
                 # Fetches all reservations from the user and displays them
@@ -119,19 +128,28 @@ require 'checkSession.php';
 
                 if ($result) {
                     $reservas = pg_fetch_all($result);
+                    $carReservationsCount = [];
 
                     foreach ($reservas as $index => $reserva) {
                         $carId = $reserva['carro_idcarro'];
-                        $sql = "SELECT * FROM carro WHERE idcarro = $carId";
-                        $result = pg_query($connection, $sql);
+                        $sql = "SELECT * FROM carro WHERE idcarro = $1";
+                        $resultCar = pg_query_params($connection, $sql, [$carId]);
 
-                        if (!$result) {
+                        if (!$resultCar) {
                             die("Erro ao buscar dados do carro: " . pg_last_error($connection));
                         } else {
-                            $car = pg_fetch_assoc($result);
+                            $car = pg_fetch_assoc($resultCar);
                         }
 
+                        // Increment the count for the current carId
+                        if (!isset($carReservationsCount[$carId])) {
+                            $carReservationsCount[$carId] = 0;
+                        }
+                        $carReservationsCount[$carId]++;
+                        $_SESSION['countReservations'] = $carReservationsCount[$carId] ?? 'error';
+
                         $str = '<div class="car-item">' .
+                            '<p>count: ' . $_SESSION['countReservations'] . '</p>' .
                             '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
                             '<h3>' . $car['marca'] . '</h3>' .
                             '<p>Modelo: ' . $car['modelo'] . '</p>' .
@@ -141,6 +159,7 @@ require 'checkSession.php';
                             '<p>Data de Levantamento: ' . $reserva['datainicio'] . '' .
                             '<p>Data de Entrega: ' . $reserva['datafim'] . '' .
                             '<p>Total: ' . $reserva['custototal'] . '</p>' .
+                            '<p>Reservas para este carro: ' . $carReservationsCount[$carId] . '</p>' .
                             '<form method="POST">' .
                             '<input type="hidden" name="idreserva" value="' . $reserva['idreserva'] . '">' .
                             '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitCancel" value="Cancelar Reserva" id="submitCancel">' .
@@ -148,7 +167,6 @@ require 'checkSession.php';
                             '</div>';
 
                         echo $str;
-
                     }
                 }
 

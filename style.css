@@ -12,7 +12,7 @@
     --background-gradient: linear-gradient(110deg, #FFF -7.98%, #EFEFEF 101.42%), var(--White, #FFF);
     --red-gradient: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(92deg, #FF1212 11.41%, #E20808 49.65%);
     --red: #cd0707;
-    --green: green; 
+    --green: green;
     --text: #000000;
     --text-light: #7F7F7F;
     --transition: all 0.3s ease;
@@ -496,7 +496,7 @@ input::file-selector-button {
 }
 
 .Revelar {
-    display: none;
+    display: none !important;
 }
 
 .Disponivel {
@@ -508,6 +508,10 @@ input::file-selector-button {
 }
 
 .Invisivel {
+    display: none;
+}
+
+.Arrendado {
     display: none;
 }
 

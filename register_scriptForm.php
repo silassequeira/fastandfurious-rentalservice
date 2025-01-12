@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRegister'])) {
             exit();
         }
     } else {
-        $randomSaldo = rand(1300, 4200);
+        $randomSaldo = rand(7890, 14200);
         $sql = "INSERT INTO cliente (username, email, password, name, saldo) VALUES ($1, $2, $3, $4, $5)";
         $resultUser = pg_query_params($connection, $sql, array($usernameInput, $emailInput, $passwordInput, $nameInput, $randomSaldo));
         if ($resultUser) {

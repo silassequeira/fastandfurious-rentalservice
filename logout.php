@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $_SESSION['logged_in'] = false;
 $_SESSION['user'] = null;
 $_SESSION['admin'] = null;
+$_SESSION['cars'] = null;
 session_unset();     // remove all session variables
 session_destroy();   // destroy the session
 

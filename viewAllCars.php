@@ -11,6 +11,8 @@ $details = $_SESSION['reservation_data'] ?? null;
 # Filter cars based on user input
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
 
+    $_SESSION['cars'] = [];
+
     $sql = "SELECT * FROM carro WHERE valordiario > 0 AND valordiario < 100000";
     $params = [];
     $placeholders = 1; // Placeholder counter
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
         $placeholders++;
     }
 
-    $sql .= " AND ocultado = FALSE";
+    $sql .= " AND (ocultado = FALSE OR arrendado = FALSE)";
 
     $result = pg_query_params($connection, $sql, $params);
 
@@ -62,8 +64,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitFilter'])) {
 
 }
 
+# Storing the reservation dates for each car in the session (admin)
+$_SESSION['dates'] = [];
+foreach ($cars as $car) {
+    $sqlDates = "SELECT cliente_username, datainicio, datafim FROM reserva WHERE carro_idcarro = $1";
+    $resultDates = pg_query_params($connection, $sqlDates, [$car['idcarro']]);
+
+    if (!$resultDates) {
+        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
+    }
+
+    $dates = pg_fetch_all($resultDates);
+
+    $_SESSION['dates'][$car['idcarro']] = $dates ? $dates : [];
+}
+
+
+# Function to check if two date intervals overlap (user)
+function intervalosCoincidem($inicio1, $fim1, $inicio2, $fim2)
+{
+    // Converte as datas para timestamps
+    $inicio1 = strtotime($inicio1);
+    $fim1 = strtotime($fim1);
+    $inicio2 = strtotime($inicio2);
+    $fim2 = strtotime($fim2);
+
+    // Verifica se há sobreposição
+    return ($inicio1 <= $fim2) && ($inicio2 <= $fim1);
+}
+
+
 # Store car records in the session with additional display fields and reservation counts (admin)
 foreach ($cars as $index => $car) {
+
 
     $_SESSION['cars'][$index] = $car;
     $_SESSION['cars'][$index]['ocultado'] = $car['ocultado'] === 't' ? 'Revelar' : 'Ocultar';
@@ -80,76 +113,46 @@ foreach ($cars as $index => $car) {
 
     $countResult = pg_fetch_result($resultCount, 0, 0);
     $_SESSION['cars'][$index]['reservation_count'] = $countResult;
+
+
 }
 
-# Storing the reservation dates for each car in the session (admin)
-$_SESSION['dates'] = [];
-foreach ($cars as $car) {
-    $sqlDates = "SELECT cliente_username, datainicio, datafim FROM reserva WHERE carro_idcarro = $1";
-    $resultDates = pg_query_params($connection, $sqlDates, [$car['idcarro']]);
-
-    if (!$resultDates) {
-        die("Erro ao buscar dados do carro: " . pg_last_error($connection));
-    }
-
-    $dates = pg_fetch_all($resultDates);
-
-    $_SESSION['dates'][$car['idcarro']] = $dates ? $dates : [];
-}
-
-# Function to check if two date intervals overlap (user)
-function intervalosCoincidem($inicio1, $fim1, $inicio2, $fim2)
-{
-    // Converte as datas para timestamps
-    $inicio1 = strtotime($inicio1);
-    $fim1 = strtotime($fim1);
-    $inicio2 = strtotime($inicio2);
-    $fim2 = strtotime($fim2);
-
-    // Verifica se há sobreposição
-    return ($inicio1 <= $fim2) && ($inicio2 <= $fim1);
-}
-
-#  Handles car availability in a time period (user)
-if (isset($_SESSION['user'])) {
-
-    foreach ($_SESSION['cars'] as $index => $car) {
-        $carId = $car['idcarro'];
-        $indiponivelnadata = false;
-
-        if ($car['reservation_count'] > 0) {
-            $sqlInicio = "SELECT datainicio FROM reserva WHERE carro_idcarro = $1";
-            $sqlFim = "SELECT datafim FROM reserva WHERE carro_idcarro = $1";
-
-            $resultInicio = pg_query_params($connection, $sqlInicio, [$car['idcarro']]);
-            $resultFim = pg_query_params($connection, $sqlFim, [$car['idcarro']]);
-            if (!$resultInicio or !$resultFim) {
-                die("Erro ao buscar dados das reservas: " . pg_last_error($connection));
-            }
-            $datasI = pg_fetch_all($resultInicio);
-            $datasF = pg_fetch_all($resultFim);
+foreach ($cars as $index => $car) {
+    $indiponivelnadata = false;
+    $_SESSION['cars'][$index]['disponivel'] = $indiponivelnadata ?? [];
 
 
-            if ($datasI && $datasF) {
-                for ($i = 0; $i < count($datasI); $i++) {
-                    $dataInicio = $datasI[$i]['datainicio'];
-                    $dataFim = $datasF[$i]['datafim'];
-                    $dataReservaIn = $_SESSION['reservation_data']['datainicio'];
-                    $dataReservaFim = $_SESSION['reservation_data']['datafim'];
-                    if (intervalosCoincidem($dataInicio, $dataFim, $dataReservaIn, $dataReservaFim)) {
-                        $indiponivelnadata = true;
-                        break;
-                    }
+    if (isset($_SESSION['user']) && $countResult > 0) {
+        $sqlInicio = "SELECT datainicio FROM reserva WHERE carro_idcarro = $1";
+        $sqlFim = "SELECT datafim FROM reserva WHERE carro_idcarro = $1";
+
+        $resultInicio = pg_query_params($connection, $sqlInicio, [$car['idcarro']]);
+        $resultFim = pg_query_params($connection, $sqlFim, [$car['idcarro']]);
+        if (!$resultInicio or !$resultFim) {
+            die("Erro ao buscar dados das reservas: " . pg_last_error($connection));
+        }
+        $datasI = pg_fetch_all($resultInicio);
+        $datasF = pg_fetch_all($resultFim);
+
+
+        if ($datasI && $datasF) {
+            for ($i = 0; $i < count($datasI); $i++) {
+                $dataInicio = $datasI[$i]['datainicio'];
+                $dataFim = $datasF[$i]['datafim'];
+                $dataReservaIn = $_SESSION['reservation_data']['datainicio'];
+                $dataReservaFim = $_SESSION['reservation_data']['datafim'];
+                if (intervalosCoincidem($dataInicio, $dataFim, $dataReservaIn, $dataReservaFim)) {
+                    $indiponivelnadata = true;
+                    break;
                 }
             }
-
         }
 
-        $_SESSION['cars'][$index]['disponivel'] = $indiponivelnadata;
-        $_SESSION['cars'][$index]['disponivel'] = $indiponivelnadata ? 'Invisivel' : 'Visivel';
     }
-}
 
+    $_SESSION['cars'][$index]['disponivel'] = $indiponivelnadata ? 'Invisivel' : 'Visivel';
+
+}
 
 #  Handles car modification (admin)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitModify']) && isset($_POST['car_id'])) {
@@ -263,102 +266,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitRent']) && isse
     exit();
 }
 
-# Displays all cars and applies different tags for the admin and the user
-foreach ($_SESSION['cars'] as $index => $car) {
+if (!isset($_SESSION['cars'])) {
+    echo "Não há carros disponíveis";
+} else {
 
-    $carId = $car['idcarro'];
-    $dates = $_SESSION['dates'][$carId] ?? [];
+    # Displays all cars and applies different tags for the admin and the user
+    foreach ($_SESSION['cars'] as $index => $car) {
+        $carId = $car['idcarro'];
+        $dates = $_SESSION['dates'][$carId] ?? [];
 
-    if (isset($_SESSION['user'])) {
-        $str = '<div class="car-item ' . $car['ocultado'] . ' ' . $car['disponivel'] . ' ' . $car['arrendado'] . ' ">';
-    } else {
-        $str = '<div class="car-item">' .
-            '<div class="infoFlex marginFlex">' .
-            '<p class="borderAround">' . $car['arrendado'] . '</p>';
-
-        if ($car['reservation_count'] == 0) {
-            $str .= '<p class="marginFlex Revelar"></p>';
+        if (isset($_SESSION['user'])) {
+            $str = '<div class="car-item ' . $car['ocultado'] . ' ' . $car['disponivel'] . ' ">';
         } else {
-            $str .= '<p class="text-light">n&#176; de reservas:<b> ' . $car['reservation_count'] . '</b></p>';
-        }
-        $str .= '</div>' ;
+            $str = '<div class="car-item">' .
+                '<div class="infoFlex marginFlex">' .
+                '<p class="borderAround">' . $car['arrendado'] . '</p>';
 
-        $str .= '<div class="layoutGridAutoFit marginFlex noGap borderTop">' ;
-
-        if (!empty($dates)) {
-            foreach ($dates as $date) {
-                $str .= '<span>' .
-                    '<p class="green">' . $date['cliente_username'] . '</p>' .
-                    '<p class="">Levantamento: ' . $date['datainicio'] . '</p>' .
-                    '<p class="">Entrega ' . $date['datafim'] . '</p>' .
-                    '</span>';
+            if ($car['reservation_count'] == 0) {
+                $str .= '<p class="marginFlex Revelar"></p>';
+            } else {
+                $str .= '<p class="text-light">n&#176; de reservas:<b> ' . $car['reservation_count'] . '</b></p>';
             }
-        } else {
-            $str .= '<span>' .
-                '<p class="Revelar"></p>' .
-                '</span>';
+            $str .= '</div>';
 
+            $str .= '<div class="layoutGridAutoFit marginFlex noGap borderTop">';
+
+            if (!empty($dates)) {
+                foreach ($dates as $date) {
+                    $str .= '<span>' .
+                        '<p class="green">' . $date['cliente_username'] . '</p>' .
+                        '<p class="">Levantamento: ' . $date['datainicio'] . '</p>' .
+                        '<p class="">Entrega ' . $date['datafim'] . '</p>' .
+                        '</span>';
+                }
+            } else {
+                $str .= '<span>' .
+                    '<p class="Revelar"></p>' .
+                    '</span>';
+
+            }
+            $str .= '</div>';
         }
-        $str .= '</div>' ;
-    }
 
-    $str .=
-        '<div class="imgContainer">' .
-        '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
-        '</div>' .
+        $str .=
+            '<div class="imgContainer">' .
+            '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+            '</div>' .
 
-        '<h3 class="centered-marginTop">' . $car['marca'] . ' ' . $car['modelo'] . '</h3>' .
+            '<h3 class="centered-marginTop">' . $car['marca'] . ' ' . $car['modelo'] . '</h3>' .
 
-        '<div class="infoFlex column">' .
+            '<div class="infoFlex column">' .
 
-        '<div class="infoFlex marginFlex ">' .
-        '<div class="infoFlex column alignCenter">' .
-        '<p>Marca</p>' .
-        '<h4>' . $car['marca'] . '</h4>' .
-        '</div>' .
+            '<div class="infoFlex marginFlex ">' .
+            '<div class="infoFlex column alignCenter">' .
+            '<p>Marca</p>' .
+            '<h4>' . $car['marca'] . '</h4>' .
+            '</div>' .
 
-        '<div class="infoFlex column alignCenter">' .
-        '<p>Modelo</p>' .
-        '<h4>' . $car['modelo'] . '</h4>' .
-        '</div>' .
-        '</div>' .
+            '<div class="infoFlex column alignCenter">' .
+            '<p>Modelo</p>' .
+            '<h4>' . $car['modelo'] . '</h4>' .
+            '</div>' .
+            '</div>' .
 
-        '<div class="infoFlex marginFlex">' .
-        '<div class="infoFlex column alignCenter">' .
-        '<p>Ano</p>' .
-        '<h4>' . $car['ano'] . '</h4>' .
-        '</div>' .
+            '<div class="infoFlex marginFlex">' .
+            '<div class="infoFlex column alignCenter">' .
+            '<p>Ano</p>' .
+            '<h4>' . $car['ano'] . '</h4>' .
+            '</div>' .
 
-        '<div class="infoFlex column alignCenter">' .
-        '<p>Assentos</p>' .
-        '<h4>' . $car['assentos'] . '</h4>' .
-        '</div>' .
-        '</div>' .
+            '<div class="infoFlex column alignCenter">' .
+            '<p>Assentos</p>' .
+            '<h4>' . $car['assentos'] . '</h4>' .
+            '</div>' .
+            '</div>' .
 
-        '<div class="infoFlex column alignCenter">' .
-        '<p>Preço Diário</p>' .
-        '<h4>' . $car['valordiario'] . '€</p>' .
-        '</div>' .
+            '<div class="infoFlex column alignCenter">' .
+            '<p>Preço Diário</p>' .
+            '<h4>' . $car['valordiario'] . '€</p>' .
+            '</div>' .
 
-        '</div>' .
+            '</div>' .
 
-        '<form method="POST">' .
-        '<input type="hidden" name="car_id" value="' . $car['idcarro'] . '">';
+            '<form method="POST">' .
+            '<input type="hidden" name="car_id" value="' . $car['idcarro'] . '">';
 
-    if (isset($_SESSION['admin'])) {
-        $str .= '<div class="infoFlex centered-marginTop">' .
-            '<input type="submit" class="button green whiteBackground" name="submitModify" value="Modificar" id="submitModify">' .
-            '<input type="submit" class="button green whiteBackground" name="submitErase" value="Eliminar" id="submitErase">' .
-            '<input type="submit" class="button green whiteBackground" name="submitHide" value="' . $car['ocultado'] . '">' .
+        if (isset($_SESSION['admin'])) {
+            $str .= '<div class="infoFlex centered-marginTop">' .
+                '<input type="submit" class="button green whiteBackground ' . $car['arrendado'] . '" name="submitModify" value="Modificar" id="submitModify">' .
+                '<input type="submit" class="button green whiteBackground ' . $car['arrendado'] . '" name="submitErase" value="Eliminar" id="submitErase">' .
+                '<input type="submit" class="button green whiteBackground ' . $car['arrendado'] . '" name="submitHide" value="' . $car['ocultado'] . '">' .
+                '</div>';
+        } else if (isset($_SESSION['user'])) {
+            $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitRent" value="Alugar" id="submitRent">';
+        }
+
+        $str .= '</form>' .
             '</div>';
-    } else if (isset($_SESSION['user'])) {
-        $str .= '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitRent" value="Alugar" id="submitRent">';
+
+        echo $str;
     }
-
-    $str .= '</form>' .
-        '</div>';
-
-    echo $str;
 }
 
 pg_close($connection);
