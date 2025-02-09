@@ -14,15 +14,15 @@ $brands = pg_fetch_all_columns($brandResult, 0);
 
 $str = '<form class="marginTop gap" method="POST">
     <div class="layoutGridAutoFit maxWidth">
-        <span class="reference">
+        <span class="reference maxWidth">
             <label for="min-price">Preço Mínimo</label>
             <input type="number" id="min-price" name="min-price" placeholder="Preço Mínimo">
         </span>
-        <span class="reference">
+        <span class="reference maxWidth">
             <label for="max-price">Preço Máximo</label>
             <input type="number" id="max-price" name="max-price" placeholder="Preço Máximo">
         </span>
-        <span class="reference">
+        <span class="reference maxWidth">
             <label for="car-brand">Marca</label>
             <select name="car-brand">
                 <option value="">Todas as Marcas</option>';
@@ -33,7 +33,7 @@ foreach ($brands as $brand) {
 
 $str .= '    </select>
         </span>
-        <span class="reference">
+        <span class="reference maxWidth">
             <label for="assentos">Assentos</label>
             <select id="assentos" name="assentos">
                 <option value="2">2</option>
@@ -42,7 +42,7 @@ $str .= '    </select>
                 <option value="5">5</option>
             </select>
         </span>
-        <div class="infoFlex">
+        <div class="infoFlex maxWidth">
         <span>
             <input type="submit" class="redBackground whiteFont noPadding" name="submitFilter" value="Filtrar">
         </span>
@@ -53,4 +53,3 @@ $str .= '    </select>
 
 
 echo $str;
-

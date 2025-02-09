@@ -19,7 +19,9 @@ require 'checkSession.php';
 <body>
 
     <header>
-        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">
+            <h4>Fast & Furious Cars Inc.</h4>
+        </a>
 
         <?php
         global $sessionCheck;
@@ -27,10 +29,20 @@ require 'checkSession.php';
 
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
-            echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
-            echo '<a href="admin_visualizeAllCars.php">Visualizar Carros</a>';
-            echo '<a href="admin_stats.php">Ver Estatísticas</a>';
-            echo '<a href="logout.php">Terminar Sessão</a>';
+            echo $str = '
+            <input id="burger" type="checkbox">
+            <label for="burger" class="active"><p>' . $adminDetails['username'] . '</p><svg width="20" height="20" viewBox="0 0 684 484" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M42 42.031H642M42 242.03H642M42 442.03H642" stroke="#5A5A5A" stroke-width="83.3333"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg> </label>
+      
+             <nav class="nav-menu">
+             <a href="index.php">Home</a>
+             <a class="biggerWeight" href="admin_addNewCar.php">Adicionar Carro</a>
+             <a href="admin_stats.php">Ver Estatísticas</a>
+             <a href="logout.php" class="redFont">Terminar Sessão</a>
+             </nav>';
         } else {
             $_SESSION['error'] = "Sem permissões suficientes para acessar esta página" . pg_last_error($connection);
             header('Location: logout.php');
@@ -40,13 +52,9 @@ require 'checkSession.php';
     </header>
 
     <main>
-
-        <div class="infoFlex">
-            <a href="admin_visualizeAllCars.php" class="back"> &lt; Voltar</a>
-            <h2>Adicionar Carro</h2>
+        <div class="container">
+            <?php require 'admin_addNewCar_script.php'; ?>
         </div>
-
-        <?php require 'admin_addNewCar_script.php'; ?>
     </main>
     <script src="javascript/imagePreview.js"></script>
     <script src="javascript/enableSubmitButton.js"></script>

@@ -14,7 +14,9 @@ session_start();
 
 <body>
     <header>
-        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
+        <a href="index.php" class="logo">
+            <h4>Fast & Furious Cars Inc.</h4>
+        </a>
     </header>
     <main class="centered-marginTop ">
         <div class="container">
@@ -41,7 +43,8 @@ session_start();
                             <a class="underline text-light" href="register.php">Criar Conta</a>
                         </span>
                         <span>
-                            <input type="submit" class="noPadding" name="submitLogin" value="Iniciar Sessão" id="submitLogin" disabled>
+                            <input type="submit" class="noPadding" name="submitLogin" value="Iniciar Sessão"
+                                id="submitLogin" disabled>
                         </span>
                     </div>
                 </div>

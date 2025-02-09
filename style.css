@@ -9,10 +9,12 @@
 
 :root {
     --background: #ffffff;
-    --background-gradient: linear-gradient(110deg, #FFF -7.98%, #EFEFEF 101.42%), var(--White, #FFF);
+    --background-gradient: linear-gradient(110deg, #FFF -7.98%, #EFEFEF 101.42%), var(--background, #FFF);
     --red-gradient: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(92deg, #FF1212 11.41%, #E20808 49.65%);
-    --red: #cd0707;
+    --red: #be0a0a;
+    --bright-red: #ee0505;
     --green: green;
+    --bright-green: rgb(0, 201, 0);
     --text: #000000;
     --text-light: #7F7F7F;
     --transition: all 0.3s ease;
@@ -29,6 +31,7 @@ body {
     line-height: normal;
     color: var(--text);
     overflow-x: hidden;
+    min-width: 370px;
 }
 
 form {
@@ -40,6 +43,9 @@ form {
     padding: 0;
 }
 
+input[type="file"],
+input,
+button,
 label,
 a,
 p,
@@ -72,12 +78,27 @@ h4 {
     font-size: 2rem;
 }
 
+input,
+button,
 h5 {
     font-size: 1.5rem;
 }
 
+
+input[type="file"],
 h6 {
     font-size: 1rem;
+}
+
+input[type="file"],
+.ponter {
+    cursor: pointer;
+}
+
+.pointer:hover {
+    cursor: pointer;
+    scale: 1.01;
+    transition: var(--transition);
 }
 
 p {
@@ -86,12 +107,7 @@ p {
 }
 
 a {
-    font-size: 1.25rem;
     text-decoration: none;
-}
-
-label {
-    font-size: 1.5rem;
 }
 
 header {
@@ -106,7 +122,6 @@ header {
 
 header .logo {
     font-weight: 400;
-    font-size: 2.25rem;
     cursor: pointer;
 }
 
@@ -123,9 +138,29 @@ header label.active {
     cursor: pointer;
 }
 
+header nav p,
 header nav a {
     margin: 0 1rem;
     padding: 0 0.5rem;
+}
+
+a:hover {
+    scale: 1.03;
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.whiteFont:hover {
+    color: var(--background);
+}
+
+header path {
+    stroke: var(--text);
+}
+
+header svg:hover {
+    scale: 1.1;
+    transition: var(--transition);
 }
 
 main {
@@ -137,6 +172,9 @@ main {
     padding-bottom: 2.3rem;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .infoFlex {
@@ -144,6 +182,7 @@ main {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
 }
 
 .inlineFlex {
@@ -153,6 +192,10 @@ main {
     align-items: center;
 }
 
+.spaceEvenly {
+    justify-content: space-evenly !important;
+}
+
 .wrap {
     flex-wrap: wrap;
 }
@@ -160,13 +203,12 @@ main {
 .button {
     font-family: var(--primary-font);
     color: var(--text);
-    font-size: 1.25rem;
     font-weight: 600;
     margin-right: 1rem;
     padding: 1.5rem 1.5rem;
     text-decoration: none;
     background: var(--background-gradient);
-    border: 1px solid var(--text);
+    border: none;
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
@@ -175,7 +217,7 @@ main {
 
 .button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 6px rgba(114, 114, 114, 0.5);
     transition: all 0.3s ease-in-out;
 }
 
@@ -184,8 +226,6 @@ main {
 .input {
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    font-family: var(--primary-font);
-    font-size: 1.5rem;
     white-space: nowrap;
     text-decoration: none;
     border: 2px solid var(--background);
@@ -199,7 +239,10 @@ main {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 .input:hover {
     transform: scale(1.05);
@@ -220,12 +263,21 @@ main {
     filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
 }
 
+
+
 .centered-marginTop {
     display: flex;
     text-align: center;
     justify-content: center;
     margin: 2.3rem auto;
+}
+
+.textTruncate {
+    text-overflow: ellipsis;
+    justify-content: left;
+    overflow: hidden;
     white-space: nowrap;
+    max-width: 85%;
 }
 
 .layoutGrid {
@@ -234,15 +286,28 @@ main {
     gap: 2.5rem;
 }
 
-.layoutGridAutoFit {
+.layoutGridBiggerAutoFit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
     gap: 2.5rem;
+    justify-items: center;
 }
 
-.maxWidth {
-    width: 100%;
+.layoutGridAutoFit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2.5rem;
+    justify-items: center;
 }
+
+.layoutGridAutoFit.multiple-car-items {
+    justify-items: stretch;
+}
+
+.layoutGridAutoFit img {
+    min-width: auto;
+}
+
 
 .noGap {
     gap: 0;
@@ -256,14 +321,10 @@ main {
     border-radius: 15px;
 }
 
-.imgContainer {
-    cursor: pointer;
-}
-
 img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     transition: object-position 5s ease-in-out;
 }
 
@@ -283,10 +344,14 @@ main nav a {
 
 .underline {
     text-decoration: underline;
-    font-size: 1rem;
     cursor: pointer;
 }
 
+.biggerWeight {
+    font-weight: 800;
+}
+
+.biggerWeight:hover,
 .underline:hover {
     color: var(--text-light);
     transition: var(--transition);
@@ -312,7 +377,7 @@ main nav a {
     display: flex;
     flex-direction: column;
     align-items: normal;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .right {
@@ -330,8 +395,15 @@ h5 {
     background: var(--background);
     margin: 0 1.875rem;
     padding: 2.3rem 1.5rem;
-    border: 1px solid;
     border-radius: 15px;
+    width: max-content;
+    max-width: 2800px;
+    height: auto;
+    min-height: 480px;
+}
+
+.maxWidth {
+    width: 100%;
 }
 
 .whiteFont {
@@ -340,6 +412,44 @@ h5 {
 
 .redFont {
     color: var(--red);
+}
+
+.redFont:hover {
+    transform: scale(1.03);
+    color: var(--bright-red);
+    transition: all 0.3s ease-in-out;
+}
+
+.greenFont {
+    color: var(--green);
+}
+
+.greenFont:hover {
+    color: var(--bright-green);
+}
+
+.redStrokeColor {
+    border: 2px solid var(--red);
+}
+
+.redStrokeColor:hover {
+    border: 2px solid var(--bright-red);
+}
+
+.greenStrokeColor {
+    border: 2px solid var(--green);
+}
+
+.greenStrokeColor:hover {
+    border: 2px solid var(--bright-green);
+}
+
+.blackStrokeColor {
+    border: 1px solid var(--text);
+}
+
+.blackStrokeColor:hover {
+    color: var(--text);
 }
 
 .redBackground {
@@ -364,6 +474,8 @@ h5 {
     margin: 1rem 0;
     border: 1px solid;
     border-radius: 15px;
+    max-width: 642px;
+    width: 100%;
 }
 
 span {
@@ -379,24 +491,29 @@ span label {
     white-space: nowrap;
 }
 
+span select,
 span input {
     padding-left: 10px;
     font-size: 1rem;
     height: 2.25rem;
     border-radius: 12px;
+    border: 2px solid;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     text-decoration: none;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
 }
 
+span input[type="submit"] {
+    text-align: center;
+}
+
+span select:hover,
 span input:hover {
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(96, 96, 96, 0.5);
     transition: all 0.3s ease-in-out;
 }
 
+span select:focus,
 span input:focus {
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
 }
@@ -406,8 +523,6 @@ span select {
     text-align: left;
     font-size: 1rem;
     width: 150px;
-    height: 2.25rem;
-    border-radius: 12px;
 }
 
 
@@ -417,7 +532,7 @@ span select {
 
 .infoFlex .reference input {
     padding-left: 10px;
-    width: 300px;
+    width: 310px;
 }
 
 .normalGap span input {
@@ -460,11 +575,10 @@ input::file-selector-button {
     margin: 0.5rem;
     border: thin solid grey;
     border-radius: 12px;
+    cursor: pointer;
 }
 
-.green {
-    color: var(--green);
-}
+
 
 .paddingFlex {
     padding: 2.3rem 1.5rem;
@@ -472,6 +586,8 @@ input::file-selector-button {
 
 .marginFlex {
     margin: 1rem 1.875rem;
+    white-space: nowrap;
+
 }
 
 .alignCenter {
@@ -518,11 +634,22 @@ input::file-selector-button {
 .normalGap {
     justify-content: normal;
     column-gap: 8rem;
+    min-height: 80px;
 }
 
 .marginTop {
     margin-top: 3.5rem;
     padding: 1rem 0;
+}
+
+
+.marginTopSmall {
+    margin-top: 1.5rem;
+}
+
+.marginRight {
+    margin-right: 2rem !important;
+    padding-right: 1rem;
 }
 
 .borderAround {
@@ -531,81 +658,47 @@ input::file-selector-button {
     border-radius: 15px;
 }
 
-@media (max-width: 1180px) {
+.active.fade-bottom {
+    animation: fade-bottom 1s ease-in;
+    animation-fill-mode: forwards;
+}
+
+header nav {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+header nav p {
+    font-size: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 1230px) {
 
     h1 {
-        font-size: 2rem;
+        font-size: 3rem;
     }
 
     h2 {
-        font-size: 1.85rem;
+        font-size: 2.5rem;
     }
 
     h3 {
-        font-size: 1.75rem;
+        font-size: 2rem;
     }
 
     h4 {
-        font-size: 1.5rem;
-    }
-
-    h5 {
-        font-size: 1.25rem;
-    }
-
-    h6 {
-        font-size: 1rem;
-    }
-
-    p {
-        font-size: 1rem;
-        line-height: 2rem;
-    }
-
-    label {
-        font-size: 1rem;
-    }
-
-    a {
-        font-size: 1rem;
-    }
-
-    .input {
-        font-size: 1rem;
-        padding: 1.35rem 1.35rem;
-    }
-
-    .container {
-        margin: 0 0;
-    }
-
-    header {
-        display: flex;
-        margin: 1rem 1rem;
-        padding: 1.5rem 1rem;
-        position: relative;
-        flex-wrap: wrap;
-    }
-
-    header .logo {
         font-size: 1.75rem;
     }
 
-    header nav {
-        align-self: flex-end;
-        margin: 1.5rem 0;
-    }
-
-    header p {
-        display: none;
-    }
-
-    header a {
-        margin-left: 1rem;
-    }
-
-    header .button {
-        padding: 1rem;
+    h5 {
+        font-size: 1.5rem;
     }
 
     main {
@@ -622,6 +715,7 @@ input::file-selector-button {
 
     .layoutGrid {
         grid-template-columns: 1fr;
+        justify-items: center;
     }
 
     .infoFlex .paddingFlex {
@@ -644,14 +738,13 @@ input::file-selector-button {
         white-space: wrap;
     }
 
-    .button {
-        margin-right: 1rem;
-        padding: 1.5rem;
-    }
-
     .column {
         margin: 0;
         padding: 0;
+    }
+
+    .marginTopSmall {
+        margin-top: 1.5rem;
     }
 
     .marginTop {
@@ -686,10 +779,218 @@ input::file-selector-button {
         column-gap: 8rem;
     }
 
+    .layoutGridAutoFit {
+        justify-items: center !important;
+    }
+
+
+
 }
 
-@media (max-width: 700px) {
+
+@media (max-width: 767px) {
+
     header {
-        justify-content: center;
+        display: flex;
+        margin: 1rem 1rem;
+        padding: 1.5rem 1rem;
+        position: relative;
+        flex-wrap: wrap;
+    }
+
+    header nav p,
+    header nav a {
+        margin: 0 0.5rem;
+        padding: 0 0.25rem;
+        display: block;
+        text-align: center;
+        color: var(--text);
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--text);
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    header nav a:last-child {
+        border-bottom: none;
+    }
+
+    header label.active {
+        display: flex;
+        font-family: var(--primary-font);
+        background-color: var(--background);
+        border: 1px solid;
+        border-radius: 15px;
+        color: var(--text);
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0 1rem;
+        padding: 0.5rem 0.5rem;
+        transition: var(--transition);
+        align-items: center;
+    }
+
+    header label.active:hover {
+        scale: 1.01;
+        transition: var(--transition);
+    }
+
+    header label.active svg {
+        margin-left: 0.5rem;
+    }
+
+    header nav {
+        display: block;
+        position: absolute;
+        top: 6.5rem;
+        left: -10px;
+        width: 105%;
+        max-height: 0;
+        overflow: hidden;
+        background: var(--background);
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    .nav-menu p {
+        display: none;
+    }
+
+    header input:checked~nav {
+        max-height: 366px;
+        border-radius: 12px;
+    }
+
+    header input:checked~nav a {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    header a {
+        margin-left: 1rem;
+    }
+
+    header .button {
+        padding: 1rem;
+    }
+
+    .input {
+        padding: 1.35rem 1.35rem;
+    }
+
+    .container {
+        margin: 0 0;
+    }
+
+    h1 {
+        font-size: 2.369rem;
+    }
+
+    h2 {
+        font-size: 1.999rem;
+    }
+
+    h3 {
+        font-size: 1.777rem;
+    }
+
+    h4 {
+        font-size: 1.333rem;
+    }
+
+    h5 {
+        font-size: 1.125rem;
+    }
+
+
+    header {
+        margin: 1rem 0;
+        padding: 1.5rem 0;
+    }
+
+    header div a:nth-child(1) {
+        display: none;
+    }
+
+    header label.active p {
+        display: none;
+    }
+
+    header label.active svg {
+        margin-left: 0;
+    }
+
+    .button {
+        padding: 1.5rem;
+    }
+
+    .infoFlex {
+        flex-wrap: wrap;
+    }
+
+    .redBackground .infoFlex {
+        flex-wrap: nowrap;
+    }
+
+    .input::-webkit-calendar-picker-indicator {
+        right: 10px;
+    }
+
+    span input {
+        width: 150px;
+    }
+
+    form .layoutGridAutoFit {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+}
+
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    h3 {
+        font-size: 1.4rem;
+    }
+
+    h4 {
+        font-size: 1.2rem;
+    }
+
+    a,
+    h5 {
+        font-size: 1rem;
+    }
+
+    p,
+    span,
+    input,
+    label,
+    button,
+    h6 {
+        font-size: 0.875rem;
+    }
+
+    form .layoutGridAutoFit {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+}
+
+@keyframes fade-bottom {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
     }
 }

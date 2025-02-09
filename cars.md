@@ -1,0 +1,20 @@
+- Dodge Charger R/T (1970) - 2 seats
+- Toyota Supra MK IV (1994) - 2 seats
+- Mitsubishi Eclipse (1995) - 2 seats
+- Nissan Skyline GT-R R34 (1999) - 4 seats
+- Mazda RX-7 (1993) - 2 seats
+- Honda S2000 (2000) - 2 seats
+- Chevrolet Camaro Yenko SYC (1969) - 4 seats
+- Ford Mustang Fastback (1967) - 4 seats
+- Nissan Silvia S15 Spec-S (2001) - 4 seats
+- Subaru Impreza WRX STi GH (2009) - 5 seats
+- Acura NSX (2003) - 2 seats
+- Chevrolet Corvette Grand Sport Sting Ray (1966) - 2 seats
+- Ford GT40 (1965) - 2 seats
+- Dodge Charger SRT-8 (2010) - 5 seats
+- Jensen Interceptor (1971) - 4 seats
+- Ford Escort MK I (1970) - 4 seats
+- Plymouth Road Runner (1970) - 4 seats
+- Nissan 240SX (1997) - 4 seats
+- Volkswagen Jetta (1995) - 5 seats
+- BMW 540i E39 (2001) - 5 seats

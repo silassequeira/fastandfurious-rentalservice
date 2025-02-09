@@ -18,17 +18,28 @@ require 'checkSession.php';
 
 <body>
     <header>
-        <a href="index.php" class="logo">Fast & Furious Cars Inc.</a>
-
+        <a href="index.php" class="logo">
+            <h4>Fast & Furious Cars Inc.</h4>
+        </a>
         <?php
         global $sessionCheck;
         global $connection;
         if (isset($_SESSION['admin'])) {
             $adminDetails = $sessionCheck['details'];
-            echo '<p>' . htmlspecialchars($adminDetails['username']) . '</p>';
-            echo '<a href="admin_addNewCar.php">Adicionar Carro</a>';
-            echo '<a href="admin_stats.php">Ver Estatísticas</a>';
-            echo '<a href="logout.php">Terminar Sessão</a>';
+            echo $str = '
+            <input id="burger" type="checkbox">
+            <label for="burger" class="active"><p>' . $adminDetails['username'] . '</p><svg width="20" height="20" viewBox="0 0 684 484" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M42 42.031H642M42 242.03H642M42 442.03H642" stroke="#5A5A5A" stroke-width="83.3333"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg> </label>
+      
+             <nav class="nav-menu">
+             <a class="biggerWeight" href="index.php">Home</a>
+             <a href="admin_addNewCar.php">Adicionar Carro</a>
+             <a href="admin_stats.php">Ver Estatísticas</a>
+             <a href="logout.php" class="redFont">Terminar Sessão</a>
+             </nav>';
         } else {
             $_SESSION['error'] = "Sem permissões suficientes para acessar esta página" . pg_last_error($connection);
             header('Location: logout.php');
@@ -38,36 +49,40 @@ require 'checkSession.php';
     </header>
 
     <main>
-        <form action="admin_visualizeAllCars.php" method="post">
-            <input type="submit" name="deleteUsers" value="Delete Users">
-        </form>
+        <div class="container maxWidth">
 
-        <?php
-        $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+            <form class="hidden" action="admin_visualizeAllCars.php" method="post">
+                <input type="submit" name="deleteUsers" value="Delete Users">
+            </form>
 
-
-        if (isset($_POST['deleteUsers'])) {
-            // SQL command to delete all rows in the "cliente" table
-            $sql = "DELETE FROM cliente";
-
-            $result = pg_query($connection, $sql);
-
-            if (!$result) {
-                die("Error deleting rows: " . pg_last_error($connection));
-            } else {
-                echo "All rows in the 'cliente' table have been deleted successfully.";
-            }
-
-        }
-        pg_close($connection);
-
-        ?>
-        <div class="layoutGrid">
             <?php
-            require 'viewAllCars.php';
+            $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+
+
+            if (isset($_POST['deleteUsers'])) {
+                // SQL command to delete all rows in the "cliente" table
+                $sql = "DELETE FROM cliente";
+
+                $result = pg_query($connection, $sql);
+
+                if (!$result) {
+                    die("Error deleting rows: " . pg_last_error($connection));
+                } else {
+                    echo "All rows in the 'cliente' table have been deleted successfully.";
+                }
+
+            }
+            pg_close($connection);
+
             ?>
+            <div class="layoutGridBiggerAutoFit">
+                <?php
+                require 'viewAllCars.php';
+                ?>
+            </div>
         </div>
     </main>
+    <script src="javascript/layoutCar-Item.js"></script>
 </body>
 
 </html>

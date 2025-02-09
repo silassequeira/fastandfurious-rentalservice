@@ -18,16 +18,27 @@ require 'checkSession.php';
 
 <body>
     <header>
-        <a href="#" class="logo">Fast & Furious Cars Inc.</a>
-
+        <a href="index.php" class="logo">
+            <h4>Fast & Furious Cars Inc.</h4>
+        </a>
         <?php
         global $sessionCheck;
         global $connection;
         if (isset($_SESSION['user'])) {
             $userDetails = $sessionCheck['details'];
-            echo '<p>Saldo: ' . htmlspecialchars($userDetails['saldo'] . ' €') . '</p>';
-            echo '<p>' . htmlspecialchars($userDetails['username']) . '</p>';
-            echo '<a href="logout.php">Terminar Sessão</a>';
+            echo $str = '
+            <input id="burger" type="checkbox">
+            <label for="burger" class="active"><p>' . $userDetails['username'] . '</p><svg width="20" height="20" viewBox="0 0 684 484" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M42 42.031H642M42 242.03H642M42 442.03H642" stroke="#5A5A5A" stroke-width="83.3333"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg> </label>
+      
+             <nav class="nav-menu">
+             <a href="index.php">Home</a>
+             <a class="biggerWeight" href="user_reservations.php">Reservas</a>
+             <a href="logout.php" class="redFont">Terminar Sessão</a>
+             </nav>';
         } elseif (isset($_SESSION['admin'])) {
             $_SESSION['error'] = "Só consegue aceder a esta página com as credenciais de cliente" . pg_last_error($connection);
             header('Location: admin_visualizeAllCars.php');
@@ -41,26 +52,26 @@ require 'checkSession.php';
     </header>
 
     <main>
-        <div class="infoFlex">
-            <a href="index.php" class="back"> &lt; Voltar</a>
-            <h2 class="marginSides">Reservas</h2>
-        </div>
-
-        <div class="layoutGrid">
-
-            <?php
-            $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
-            if (!$connection) {
-                die("Error connecting to the database");
-            }
-
-            if (isset($_SESSION['error'])) {
-                echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
-                unset($_SESSION['error']);
-            }
-            ?>
+        <div class="container maxWidth">
 
             <div class="infoFlex">
+                <a href="index.php" class="back"> &lt; Voltar</a>
+                <h2 class="marginSides">Reservas</h2>
+            </div>
+
+            <div class="layoutGridAutoFit">
+
+                <?php
+                $connection = pg_connect("dbname=postgres user=postgres password=postgres host=localhost port=5432");
+                if (!$connection) {
+                    die("Error connecting to the database");
+                }
+
+                if (isset($_SESSION['error'])) {
+                    echo '<p style="color:red;">' . $_SESSION['error'] . '</p>';
+                    unset($_SESSION['error']);
+                }
+                ?>
                 <?php
                 global $connection;
 
@@ -149,8 +160,9 @@ require 'checkSession.php';
                         $_SESSION['countReservations'] = $carReservationsCount[$carId] ?? 'error';
 
                         $str = '<div class="car-item">' .
-                            '<p>count: ' . $_SESSION['countReservations'] . '</p>' .
+                            '<div class="imgContainer">' .
                             '<img src="' . $car['foto'] . '" alt="Imagem do carro">' .
+                            '</div>' .
                             '<h3>' . $car['marca'] . '</h3>' .
                             '<p>Modelo: ' . $car['modelo'] . '</p>' .
                             '<p>Ano: ' . $car['ano'] . '</p>' .
@@ -162,7 +174,7 @@ require 'checkSession.php';
                             '<p>Reservas para este carro: ' . $carReservationsCount[$carId] . '</p>' .
                             '<form method="POST">' .
                             '<input type="hidden" name="idreserva" value="' . $reserva['idreserva'] . '">' .
-                            '<input type="submit" class="button centered-marginTop redFont whiteBackground" name="submitCancel" value="Cancelar Reserva" id="submitCancel">' .
+                            '<input type="submit" class="button centered-marginTop redFont whiteBackground redStrokeColor" name="submitCancel" value="Cancelar Reserva" id="submitCancel">' .
                             '</form>' .
                             '</div>';
 

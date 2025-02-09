@@ -9,7 +9,7 @@ if (!$connection) {
 # Validate user/admin sessions and returns the details like "username" "name" etc. related to each one
 function checkSession($connection)
 {
-    if (isset($_SESSION['user']) && isset($_SESSION['logged_in'])) { 
+    if (isset($_SESSION['user']) && isset($_SESSION['logged_in'])) {
         $usernameInput = $_SESSION['user'];
         $query = pg_query_params(
             $connection,
