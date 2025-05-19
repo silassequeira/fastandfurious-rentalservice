@@ -175,3 +175,4 @@ This project was developed as part of a university assignment.
 
 Contributors:
 - Silas Sequeira
+- Sam-Coelho
